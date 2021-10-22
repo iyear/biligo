@@ -6,19 +6,12 @@ import (
 	"github.com/iyear/biligo/internal/util"
 	"github.com/iyear/biligo/proto/dm"
 	"github.com/tidwall/gjson"
-	"log"
-	"math/rand"
 	"net/http"
-	"os"
 	"strconv"
-	"time"
 )
 
 type CommClient struct {
-	debug  bool
-	client *http.Client
-	ua     string
-	logger *log.Logger
+	*baseClient
 }
 type CommSetting struct {
 
@@ -42,24 +35,12 @@ type CommSetting struct {
 //
 // Setting的Auth属性可以随意填写或传入nil，Auth不起到作用，用于访问公共API
 func NewCommClient(setting *CommSetting) *CommClient {
-	client := setting.Client
-	if client == nil {
-		client = http.DefaultClient
-	}
-
-	ua := setting.UserAgent
-	if ua == "" {
-		rand.Seed(time.Now().UnixNano())
-		ua = userAgent[rand.Intn(len(userAgent))]
-	}
-	comm := &CommClient{
-		debug:  setting.DebugMode,
-		client: client,
-		ua:     ua,
-		logger: log.New(os.Stdout, "CommClient ", log.LstdFlags),
-	}
-
-	return comm
+	return &CommClient{baseClient: newBaseClient(&baseSetting{
+		Client:    setting.Client,
+		DebugMode: setting.DebugMode,
+		UserAgent: setting.UserAgent,
+		Prefix:    "CommClient ",
+	})}
 }
 
 // SetClient
@@ -74,6 +55,22 @@ func (c *CommClient) SetClient(client *http.Client) {
 // 设置UA
 func (c *CommClient) SetUA(ua string) {
 	c.ua = ua
+}
+
+func (c *CommClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
+	// 不用侵入处理则传入nil
+	raw, err := c.raw(base, endpoint, method, payload, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	return raw, nil
+}
+func (c *CommClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
+	raw, err := c.Raw(base, endpoint, method, payload)
+	if err != nil {
+		return nil, err
+	}
+	return c.parse(raw)
 }
 
 // GetGeoInfo 调用哔哩哔哩API获取地理位置等信息

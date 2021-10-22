@@ -8,22 +8,17 @@ import (
 	"github.com/iyear/biligo/proto/dm"
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
-	"log"
-	"math/rand"
 	"net/http"
-	"os"
+	"net/url"
 	"strconv"
 	"time"
 )
 
 type BiliClient struct {
-	Me *Account
+	Me   *Account
+	auth *CookieAuth
 
-	auth   *CookieAuth
-	debug  bool
-	client *http.Client
-	ua     string
-	logger *log.Logger
+	*baseClient
 }
 
 type CookieAuth struct {
@@ -58,22 +53,14 @@ func NewBiliClient(setting *BiliSetting) (*BiliClient, error) {
 		return nil, errors.New("auth cannot be nil")
 	}
 
-	client := setting.Client
-	if client == nil {
-		client = http.DefaultClient
-	}
-
-	ua := setting.UserAgent
-	if ua == "" {
-		rand.Seed(time.Now().UnixNano())
-		ua = userAgent[rand.Intn(len(userAgent))]
-	}
 	bili := &BiliClient{
-		auth:   setting.Auth,
-		debug:  setting.DebugMode,
-		client: client,
-		ua:     ua,
-		logger: log.New(os.Stdout, "BiliClient ", log.LstdFlags),
+		auth: setting.Auth,
+		baseClient: newBaseClient(&baseSetting{
+			Client:    setting.Client,
+			DebugMode: setting.DebugMode,
+			UserAgent: setting.UserAgent,
+			Prefix:    "BiliClient ",
+		}),
 	}
 
 	account, err := bili.GetMe()
@@ -117,6 +104,32 @@ func (b *BiliClient) SetClient(client *http.Client) {
 // 设置UA
 func (b *BiliClient) SetUA(ua string) {
 	b.ua = ua
+}
+
+// Raw base末尾带/
+func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
+	raw, err := b.raw(base, endpoint, method, payload,
+		func(d *url.Values) {
+			switch method {
+			case "POST":
+				d.Add("csrf", b.auth.BiliJCT)
+			}
+		},
+		func(r *http.Request) {
+			r.Header.Add("Cookie", fmt.Sprintf("DedeUserID=%s;SESSDATA=%s;DedeUserID__ckMd5=%s",
+				b.auth.DedeUserID, b.auth.SESSDATA, b.auth.DedeUserIDCkMd5))
+		})
+	if err != nil {
+		return nil, err
+	}
+	return raw, nil
+}
+func (b *BiliClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
+	raw, err := b.Raw(base, endpoint, method, payload)
+	if err != nil {
+		return nil, err
+	}
+	return b.parse(raw)
 }
 
 // GetCookieAuth

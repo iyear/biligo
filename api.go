@@ -4,23 +4,74 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
+	"time"
 )
 
-// Raw base末尾带/
-func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
+type baseClient struct {
+	debug  bool
+	client *http.Client
+	ua     string
+	logger *log.Logger
+}
+type baseSetting struct {
+	// 自定义http client
+	//
+	// 默认为 http.http.DefaultClient
+	Client *http.Client
+	// Debug模式 true将输出请求信息 false不输出
+	//
+	// 默认false
+	DebugMode bool
+	// 自定义UserAgent
+	//
+	// 默认Chrome随机Agent
+	UserAgent string
+	// Logger 的输出前缀，区分Client
+	Prefix string
+}
+
+func newBaseClient(setting *baseSetting) *baseClient {
+	client := setting.Client
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	ua := setting.UserAgent
+	if ua == "" {
+		rand.Seed(time.Now().UnixNano())
+		ua = userAgent[rand.Intn(len(userAgent))]
+	}
+
+	return &baseClient{
+		debug:  setting.DebugMode,
+		client: client,
+		ua:     ua,
+		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags),
+	}
+}
+
+func (h *baseClient) raw(base, endpoint, method string, payload map[string]string, dAfter func(d *url.Values), reqAfter func(r *http.Request)) ([]byte, error) {
 	var (
-		req     *http.Request
-		err     error
-		reqData url.Values
+		req  *http.Request
+		err  error
+		data url.Values
 	)
 	link := base + endpoint
 
-	reqData = url.Values{}
+	data = url.Values{}
 	for k, v := range payload {
-		reqData.Add(k, v)
+		data.Add(k, v)
+	}
+
+	// 侵入处理values
+	if dAfter != nil {
+		dAfter(&data)
 	}
 
 	switch method {
@@ -29,78 +80,9 @@ func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]strin
 		if err != nil {
 			return nil, err
 		}
-		req.URL.RawQuery = reqData.Encode()
+		req.URL.RawQuery = data.Encode()
 	case "POST":
-		reqData.Add("csrf", b.auth.BiliJCT)
-		req, err = http.NewRequest(method, link, strings.NewReader(reqData.Encode()))
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	req.Header.Add("Cookie",
-		fmt.Sprintf("DedeUserID=%s;SESSDATA=%s;DedeUserID__ckMd5=%s",
-			b.auth.DedeUserID, b.auth.SESSDATA, b.auth.DedeUserIDCkMd5))
-	req.Header.Add("Origin", "https://www.bilibili.com")
-	req.Header.Add("Referer", "https://www.bilibili.com")
-	req.Header.Add("Content-type", "application/x-www-form-urlencoded")
-	req.Header.Add("User-Agent", b.ua)
-
-	resp, err := b.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	resp.Close = true
-	defer resp.Body.Close()
-
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if b.debug {
-		b.logger.Printf("url: %s value: %+v", link, reqData)
-		b.logger.Printf("resp: %+v", string(data))
-	}
-
-	return data, nil
-}
-func (b *BiliClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
-	raw, err := b.Raw(base, endpoint, method, payload)
-	if err != nil {
-		return nil, err
-	}
-	var result = &Response{}
-	if err = json.Unmarshal(raw, &result); err != nil {
-		return nil, err
-	}
-	if result.Code != 0 {
-		return nil, fmt.Errorf("(%d) %s", result.Code, result.Message)
-	}
-	return result, nil
-}
-func (c *CommClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
-	var (
-		req     *http.Request
-		err     error
-		reqData url.Values
-	)
-	link := base + endpoint
-
-	reqData = url.Values{}
-	for k, v := range payload {
-		reqData.Add(k, v)
-	}
-
-	switch method {
-	case "GET":
-		req, err = http.NewRequest(method, link, nil)
-		if err != nil {
-			return nil, err
-		}
-		req.URL.RawQuery = reqData.Encode()
-	case "POST":
-		req, err = http.NewRequest(method, link, strings.NewReader(reqData.Encode()))
+		req, err = http.NewRequest(method, link, strings.NewReader(data.Encode()))
 		if err != nil {
 			return nil, err
 		}
@@ -109,34 +91,35 @@ func (c *CommClient) Raw(base, endpoint, method string, payload map[string]strin
 	req.Header.Add("Origin", "https://www.bilibili.com")
 	req.Header.Add("Referer", "https://www.bilibili.com")
 	req.Header.Add("Content-type", "application/x-www-form-urlencoded")
-	req.Header.Add("User-Agent", c.ua)
+	req.Header.Add("User-Agent", h.ua)
 
-	resp, err := c.client.Do(req)
+	// 侵入处理req
+	if reqAfter != nil {
+		reqAfter(req)
+	}
+
+	resp, err := h.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	resp.Close = true
 	defer resp.Body.Close()
 
-	data, err := ioutil.ReadAll(resp.Body)
+	raw, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	if c.debug {
-		c.logger.Printf("url: %s value: %+v", link, reqData)
-		c.logger.Printf("resp: %+v", string(data))
+	if h.debug {
+		h.logger.Printf("url: %s value: %+v", link, data)
+		h.logger.Printf("resp: %+v", string(raw))
 	}
 
-	return data, nil
+	return raw, nil
 }
-func (c *CommClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
-	raw, err := c.Raw(base, endpoint, method, payload)
-	if err != nil {
-		return nil, err
-	}
+func (h *baseClient) parse(raw []byte) (*Response, error) {
 	var result = &Response{}
-	if err = json.Unmarshal(raw, &result); err != nil {
+	if err := json.Unmarshal(raw, &result); err != nil {
 		return nil, err
 	}
 	if result.Code != 0 {
