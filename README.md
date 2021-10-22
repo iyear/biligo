@@ -1,4 +1,4 @@
-<img src="https://github.com/iyear/bilibili-api-go/raw/v0/logo/bilibili.png" alt="logo" width="130" height="130" align="left" />
+<img src="https://github.com/iyear/biligo/raw/v0/logo/bilibili.png" alt="logo" width="130" height="130" align="left" />
 
 <h1>BiliGO</h1>
 
