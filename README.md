@@ -8,7 +8,7 @@
 
 ![](https://img.shields.io/github/go-mod/go-version/iyear/biligo?style=flat-square)
 ![](https://img.shields.io/badge/license-GPL-lightgrey.svg?style=flat-square)
-![](https://img.shields.io/github/v/release/iyear/biligo?color=green&style=flat-square)
+![](https://img.shields.io/github/v/release/iyear/biligo?color=red&style=flat-square)
 
 ## 简介
 
@@ -192,7 +192,7 @@ func GetComments() {
 - 由于项目特殊性，随时可能删库，随时可能弃坑
 ## 已实现API
 
-https://github.com/iyear/bilibili-api-go/blob/v0/API.md
+[v0已实现API](https://github.com/iyear/biligo/blob/v0/API.md)
 
 ## 留言
 ### 1
