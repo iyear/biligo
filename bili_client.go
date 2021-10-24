@@ -428,10 +428,7 @@ func (b *BiliClient) SpaceCancelTopArchive() error {
 		"POST",
 		nil,
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SpaceAddMasterpieces 添加代表作 上限为3个稿件
@@ -447,10 +444,7 @@ func (b *BiliClient) SpaceAddMasterpieces(aid int64, reason string) error {
 			"reason": reason,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SpaceCancelMasterpiece
@@ -465,10 +459,7 @@ func (b *BiliClient) SpaceCancelMasterpiece(aid int64) error {
 			"aid": strconv.FormatInt(aid, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SpaceSetTags 设置用户个人TAG TAG里不要包含逗号会被当作分隔符
@@ -487,10 +478,7 @@ func (b *BiliClient) SpaceSetTags(tags []string) error {
 			"tags": util.StringSliceToString(tags, ","),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SpaceSetNotice 修改公告内容
@@ -505,10 +493,7 @@ func (b *BiliClient) SpaceSetNotice(notice string) error {
 			"notice": notice,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SpaceGetMyLastPlayGame
@@ -627,10 +612,7 @@ func (b *BiliClient) ChanEdit(cid int64, name string, intro string) error {
 			"intro": intro,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // ChanDel 删除频道
@@ -645,10 +627,7 @@ func (b *BiliClient) ChanDel(cid int64) error {
 			"cid": strconv.FormatInt(cid, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // ChanAddVideo 频道添加视频，返回添加错误的视频aid
@@ -698,7 +677,7 @@ func (b *BiliClient) ChanDelVideo(cid int64, aid int64) error {
 		return err
 	}
 	// 完成后需要使用接口「查询用户频道中的视频」刷新
-	if _, err := b.ChanGetMyVideo(cid, 1, 1); err != nil {
+	if _, err = b.ChanGetMyVideo(cid, 1, 1); err != nil {
 		return err
 	}
 	return nil
@@ -718,10 +697,7 @@ func (b *BiliClient) ChanSetVideoSort(cid int64, aid int64, to int) error {
 			"to":  strconv.Itoa(to),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // ChanHasInvalidVideo
@@ -738,10 +714,7 @@ func (b *BiliClient) ChanHasInvalidVideo(cid int64) error {
 			"cid": strconv.FormatInt(cid, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // ChanGetMyVideo
@@ -888,10 +861,7 @@ func (b *BiliClient) FavDel(mlids []int64) error {
 			"media_ids": util.Int64SliceToString(mlids, ","),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // FavGetRes
@@ -999,10 +969,7 @@ func (b *BiliClient) FavCopyRes(from int64, to int64, mid int64, resources []str
 			"platform":     "web",
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // FavMoveRes 收藏夹批量移动内容
@@ -1021,10 +988,7 @@ func (b *BiliClient) FavMoveRes(from int64, to int64, mid int64, resources []str
 			"platform":     "web",
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // FavDelRes 收藏夹批量删除内容
@@ -1040,10 +1004,7 @@ func (b *BiliClient) FavDelRes(mlid int64, resources []string) error {
 			"resources": util.StringSliceToString(resources, ","),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // FavCleanRes
@@ -1058,10 +1019,7 @@ func (b *BiliClient) FavCleanRes(mlid int64) error {
 			"media_id": strconv.FormatInt(mlid, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // SignUpdate
@@ -1073,10 +1031,7 @@ func (b *BiliClient) SignUpdate(sign string) error {
 		"POST",
 		map[string]string{"user_sign": sign},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoAddLike
@@ -1091,10 +1046,7 @@ func (b *BiliClient) VideoAddLike(aid int64, like bool) error {
 			"like": util.IF(like, "1", "2").(string),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoIsLiked
@@ -1137,10 +1089,7 @@ func (b *BiliClient) VideoAddCoins(aid int64, num int, like bool) error {
 			"select_like": util.IF(like, "1", "0").(string),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoIsAddedCoins
@@ -1311,10 +1260,7 @@ func (b *BiliClient) VideoReportProgress(aid int64, cid int64, progress int64) e
 			"progress": strconv.FormatInt(progress, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoGetPlayURL 获取视频取流地址
@@ -1364,10 +1310,7 @@ func (b *BiliClient) VideoHeartBeat(aid int64, cid int64, playedTime int64) erro
 			"played_time": strconv.FormatInt(playedTime, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoGetTags
@@ -1403,10 +1346,7 @@ func (b *BiliClient) VideoLikeTag(aid int64, tagID int64) error {
 			"tag_id": strconv.FormatInt(tagID, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // VideoHateTag 点踩视频的TAG
@@ -1421,10 +1361,7 @@ func (b *BiliClient) VideoHateTag(aid int64, tagID int64) error {
 			"tag_id": strconv.FormatInt(tagID, 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // DanmakuGetHistoryIndex
@@ -1628,10 +1565,7 @@ func (b *BiliClient) DanmakuLike(cid int64, dmid uint64, op int) error {
 			"op":   strconv.Itoa(op),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // DanmakuReport 举报弹幕
@@ -1665,10 +1599,7 @@ func (b *BiliClient) DanmakuReport(cid int64, dmid uint64, reason int, content s
 			"content": content,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // DanmakuEditState 保护&删除弹幕，只能操作自己的稿件或有骑士权限的稿件
@@ -1695,10 +1626,7 @@ func (b *BiliClient) DanmakuEditState(tp int, cid int64, dmids []uint64, state i
 			"state": strconv.Itoa(state),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // DanmakuEditPool 修改字幕池，只能操作自己的稿件或有骑士权限的稿件
@@ -1724,10 +1652,7 @@ func (b *BiliClient) DanmakuEditPool(tp int, cid int64, dmids []uint64, pool int
 			"pool":  strconv.Itoa(pool),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // DanmakuCommandPost 发送互动弹幕，只能在自己的视频发
@@ -1811,10 +1736,7 @@ func (b *BiliClient) DanmakuSetConfig(conf *DanmakuConfig) error {
 			"ts":           strconv.FormatInt(util.GetCST8Time(time.Now()).Unix(), 10),
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // EmotePackGetMy 获取我的表情包列表
@@ -1884,10 +1806,7 @@ func (b *BiliClient) EmotePackAdd(id int64, business string) error {
 			"business":   business,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // EmotePackRemove 移除表情包
@@ -1905,10 +1824,7 @@ func (b *BiliClient) EmotePackRemove(id int64, business string) error {
 			"business":   business,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // AudioGetInfo
@@ -2083,10 +1999,7 @@ func (b *BiliClient) ChargeSetMessage(order string, message string) error {
 			"message":  message,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // ChargeTradeCreateQrCode 第三方如支付宝、微信充电
