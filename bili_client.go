@@ -106,7 +106,9 @@ func (b *BiliClient) SetUA(ua string) {
 	b.ua = ua
 }
 
-// Raw base末尾带/
+// Raw
+//
+// base末尾带/
 func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
 	raw, err := b.raw(base, endpoint, method, payload,
 		func(d *url.Values) {
@@ -124,6 +126,10 @@ func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]strin
 	}
 	return raw, nil
 }
+
+// RawParse
+//
+// base末尾带/
 func (b *BiliClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
 	raw, err := b.Raw(base, endpoint, method, payload)
 	if err != nil {

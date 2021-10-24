@@ -57,6 +57,9 @@ func (c *CommClient) SetUA(ua string) {
 	c.ua = ua
 }
 
+// Raw
+//
+// base末尾带/
 func (c *CommClient) Raw(base, endpoint, method string, payload map[string]string) ([]byte, error) {
 	// 不用侵入处理则传入nil
 	raw, err := c.raw(base, endpoint, method, payload, nil, nil)
@@ -65,6 +68,10 @@ func (c *CommClient) Raw(base, endpoint, method string, payload map[string]strin
 	}
 	return raw, nil
 }
+
+// RawParse
+//
+// base末尾带/
 func (c *CommClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
 	raw, err := c.Raw(base, endpoint, method, payload)
 	if err != nil {
