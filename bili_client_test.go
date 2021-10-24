@@ -14,10 +14,10 @@ func init() {
 func newTestBiliClient() *BiliClient {
 	c, _ := NewBiliClient(&BiliSetting{
 		Auth: &CookieAuth{
-			DedeUserID:      "",
-			SESSDATA:        "",
-			BiliJCT:         "",
-			DedeUserIDCkMd5: "",
+			DedeUserID:      "25422594",
+			SESSDATA:        "7ae9a4ff%2C1645861542%2C31ed1%2A81",
+			BiliJCT:         "022608bb2d19b016aaf87fdecb807d64",
+			DedeUserIDCkMd5: "f51d79af1e3f2bf3",
 		},
 		DebugMode: true,
 	})
@@ -656,4 +656,11 @@ func TestBiliClient_ChargeTradeQrCodeCheck(t *testing.T) {
 		t.FailNow()
 	}
 	t.Logf("status: %d,mid: %d,order: %s,token: %s", stat.Status, stat.MID, stat.OrderNo, stat.QrToken)
+}
+func TestBiliClient_SetFollowUser(t *testing.T) {
+	err := testBiliClient.FollowUser(12876334, false)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 }

@@ -1342,6 +1342,8 @@ func (b *BiliClient) VideoGetPlayURL(aid int64, cid int64, qn int, fnval int) (*
 //
 // 默认间隔15秒一次，不要过慢或过快上报，控制好时间间隔
 //
+// playedTime 已播放时间 单位为秒 默认为0
+//
 // 包含了 VideoReportProgress 的功能(应该)
 func (b *BiliClient) VideoHeartBeat(aid int64, cid int64, playedTime int64) error {
 	_, err := b.RawParse(
@@ -2137,4 +2139,26 @@ func (b *BiliClient) ChargeTradeCheckQrCode(token string) (*ChargeQrCodeStatus, 
 		return nil, err
 	}
 	return status, nil
+}
+
+// FollowUser
+//
+// 关注用户或取消关注
+//
+// follow true:关注 false:取消关注
+func (b *BiliClient) FollowUser(mid int64, follow bool) error {
+	_, err := b.RawParse(
+		BiliApiURL,
+		"x/relation/modify",
+		"POST",
+		map[string]string{
+			"fid": strconv.FormatInt(mid, 10),
+			"act": util.IF(follow, "1", "2").(string),
+			// 以下为未知用途参数
+			"re_src":         "11",
+			"spmid":          "333.999.0.0",
+			"extend_content": fmt.Sprintf(`{"entity":"user","entity_id":%s}`, strconv.FormatInt(mid, 10)),
+		},
+	)
+	return err
 }
