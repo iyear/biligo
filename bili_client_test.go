@@ -2,6 +2,7 @@ package biligo
 
 import (
 	"encoding/json"
+	"os"
 	"strconv"
 	"testing"
 )
@@ -14,10 +15,10 @@ func init() {
 func newTestBiliClient() *BiliClient {
 	c, _ := NewBiliClient(&BiliSetting{
 		Auth: &CookieAuth{
-			DedeUserID:      "25422594",
-			SESSDATA:        "7ae9a4ff%2C1645861542%2C31ed1%2A81",
-			BiliJCT:         "022608bb2d19b016aaf87fdecb807d64",
-			DedeUserIDCkMd5: "f51d79af1e3f2bf3",
+			DedeUserID:      os.Getenv("DedeUserID"),
+			SESSDATA:        os.Getenv("SESSDATA"),
+			BiliJCT:         os.Getenv("BiliJCT"),
+			DedeUserIDCkMd5: os.Getenv("DedeUserIDCkMd5"),
 		},
 		DebugMode: true,
 	})
