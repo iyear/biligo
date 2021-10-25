@@ -1319,3 +1319,50 @@ type LiveRoomInfo struct {
 	BroadcastType int    `json:"broadcast_type"` // 0
 	OnlineHidden  int    `json:"online_hidden"`  // 0
 }
+type FollowingsDetail struct {
+	ReVersion int               `json:"re_version"` // 0
+	Total     int               `json:"total"`      // 关注总数
+	List      []*FollowingsItem `json:"list"`       // 关注详细信息
+}
+
+type FollowingsItem struct {
+	MID          int64    `json:"mid"`       // mid
+	Attribute    int      `json:"attribute"` // 属性值
+	Mtime        int64    `json:"mtime"`     // 关注时间
+	Tag          []string `json:"tag,omitempty"`
+	Special      int      `json:"special"`
+	ContractInfo *struct {
+		IsContractor bool `json:"is_contractor"`
+		TS           int  `json:"ts"`
+		IsContract   bool `json:"is_contract"`
+		UserAttr     int  `json:"user_attr"`
+	} `json:"contract_info"`
+	Uname          string `json:"uname"` // 昵称
+	Face           string `json:"face"`  // 头像
+	Sign           string `json:"sign"`  // 个人签名
+	OfficialVerify *struct {
+		Type int    `json:"type"`
+		Desc string `json:"desc"`
+	} `json:"official_verify"` // 认证信息
+	Vip *struct {
+		VipType       int    `json:"vipType"`
+		VipDueDate    int64  `json:"vipDueDate"`
+		DueRemark     string `json:"dueRemark"`
+		AccessStatus  int    `json:"accessStatus"`
+		VipStatus     int    `json:"vipStatus"`
+		VipStatusWarn string `json:"vipStatusWarn"`
+		ThemeType     int    `json:"themeType"`
+		Label         *struct {
+			Path        string `json:"path"`
+			Text        string `json:"text"`
+			LabelTheme  string `json:"label_theme"`
+			TextColor   string `json:"text_color"`
+			BgStyle     int    `json:"bg_style"`
+			BgColor     string `json:"bg_color"`
+			BorderColor string `json:"border_color"`
+		} `json:"label"`
+		AvatarSubscript    int    `json:"avatar_subscript"`
+		NicknameColor      string `json:"nickname_color"`
+		AvatarSubscriptURL string `json:"avatar_subscript_url"`
+	} `json:"vip"` // VIP信息
+}

@@ -99,6 +99,33 @@ func (c *CommClient) GetGeoInfo() (*GeoInfo, error) {
 	return info, nil
 }
 
+// FollowingsGetDetail 获取个人详细的关注列表
+//
+// pn 页码
+//
+// ps 每页项数，最大50
+func (c *CommClient) FollowingsGetDetail(mid int64, pn int, ps int) (*FollowingsDetail, error) {
+	resp, err := c.RawParse(
+		BiliApiURL,
+		"x/relation/followings",
+		"GET",
+		map[string]string{
+			"vmid": strconv.FormatInt(mid, 10),
+			"pn":   strconv.Itoa(pn),
+			"ps":   strconv.Itoa(ps),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var detail = &FollowingsDetail{}
+	if err = json.Unmarshal(resp.Data, &detail); err != nil {
+		return nil, err
+	}
+	return detail, nil
+}
+
 // VideoGetStat
 //
 // 获取稿件状态数

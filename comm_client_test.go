@@ -470,3 +470,14 @@ func TestCommClient_LiveRoomInfo(t *testing.T) {
 	t.Logf("cover: %s", info.Cover)
 	t.Logf("url: %s", info.URL)
 }
+func TestCommClient_FollowingsGetDetail(t *testing.T) {
+	detail, err := testCommClient.FollowingsGetDetail(95706136, 1, 5)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("count: %d", detail.Total)
+	for _, l := range detail.List {
+		t.Logf("mid: %d,uname: %s", l.MID, l.Uname)
+	}
+}

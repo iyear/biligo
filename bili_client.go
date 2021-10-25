@@ -313,6 +313,63 @@ func (b *BiliClient) GetRealNameInfo() (*RealNameInfo, error) {
 	return info, nil
 }
 
+// FollowingsGetMy 获取我的关注列表
+//
+// mid数组
+func (b *BiliClient) FollowingsGetMy() ([]int64, error) {
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"feed/v1/feed/get_attention_list",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return []int64{}, err
+	}
+
+	var mids struct {
+		List []int64 `json:"list"`
+	}
+	if err = json.Unmarshal(resp.Data, &mids); err != nil {
+		return []int64{}, err
+	}
+	return mids.List, nil
+}
+
+// FollowingsGetMyDetail 获取我的详细的关注列表，获取他人的请使用 CommClient
+//
+// pn 页码
+//
+// ps 每页项数，最大50
+//
+// order 1:最常访问 2:最近关注
+func (b *BiliClient) FollowingsGetMyDetail(pn int, ps int, order int) (*FollowingsDetail, error) {
+	var o = map[int]string{
+		1: "attention",
+		2: "",
+	}
+	resp, err := b.RawParse(
+		BiliApiURL,
+		"x/relation/followings",
+		"GET",
+		map[string]string{
+			"vmid":       strconv.FormatInt(b.Me.MID, 10),
+			"pn":         strconv.Itoa(pn),
+			"ps":         strconv.Itoa(ps),
+			"order_type": o[order],
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var detail = &FollowingsDetail{}
+	if err = json.Unmarshal(resp.Data, &detail); err != nil {
+		return nil, err
+	}
+	return detail, nil
+}
+
 // GetCoinLogs
 //
 // 获取最近一周的硬币变化情况

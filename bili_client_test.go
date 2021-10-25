@@ -664,3 +664,23 @@ func TestBiliClient_SetFollowUser(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_FollowingsGetMy(t *testing.T) {
+	list, err := testBiliClient.FollowingsGetMy()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Log(list)
+	t.Logf("count: %d", len(list))
+}
+func TestBiliClient_FollowingsGetMyDetail(t *testing.T) {
+	detail, err := testBiliClient.FollowingsGetMyDetail(1, 5, 1)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("count: %d", detail.Total)
+	for _, l := range detail.List {
+		t.Logf("mid: %d,uname: %s", l.MID, l.Uname)
+	}
+}

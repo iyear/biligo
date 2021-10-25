@@ -6,6 +6,7 @@ const (
 	BiliPassportURL = "https://passport.bilibili.com/"
 	BiliElecURL     = "https://elec.bilibili.com/"
 	BiliLiveURL     = "https://api.live.bilibili.com/"
+	BiliVcURL       = "https://api.vc.bilibili.com/"
 )
 
 var userAgent = []string{
