@@ -8,6 +8,7 @@ import (
 	"github.com/iyear/biligo/proto/dm"
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -132,6 +133,33 @@ func (b *BiliClient) Raw(base, endpoint, method string, payload map[string]strin
 // base末尾带/
 func (b *BiliClient) RawParse(base, endpoint, method string, payload map[string]string) (*Response, error) {
 	raw, err := b.Raw(base, endpoint, method, payload)
+	if err != nil {
+		return nil, err
+	}
+	return b.parse(raw)
+}
+
+// Upload 上传文件
+//
+// base末尾带/
+func (b *BiliClient) Upload(base, endpoint string, payload map[string]string, files []*FileUpload) ([]byte, error) {
+	raw, err := b.upload(base, endpoint, payload, files, func(m *multipart.Writer) error {
+		return m.WriteField("csrf", b.auth.BiliJCT)
+	}, func(r *http.Request) {
+		r.Header.Add("Cookie", fmt.Sprintf("DedeUserID=%s;SESSDATA=%s;DedeUserID__ckMd5=%s",
+			b.auth.DedeUserID, b.auth.SESSDATA, b.auth.DedeUserIDCkMd5))
+	})
+	if err != nil {
+		return nil, err
+	}
+	return raw, nil
+}
+
+// UploadParse 上传文件
+//
+// base末尾带/
+func (b *BiliClient) UploadParse(base, endpoint string, payload map[string]string, files []*FileUpload) (*Response, error) {
+	raw, err := b.Upload(base, endpoint, payload, files)
 	if err != nil {
 		return nil, err
 	}

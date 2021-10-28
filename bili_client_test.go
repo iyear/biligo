@@ -719,3 +719,39 @@ func TestBiliClient_DynaLike(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_UploadParse(t *testing.T) {
+	f1, _ := os.Open("./test_code/1.jpg")
+	f2, _ := os.Open("./test_code/2.jpg")
+	f3, _ := os.Open("./test_code/3.png")
+
+	r, err := testBiliClient.UploadParse(
+		"http://localhost:9999",
+		"/up",
+		map[string]string{
+			"biz":      "dyn",
+			"category": "daily",
+		},
+		[]*FileUpload{
+			{
+				"files",
+				"1.jpg",
+				f1,
+			},
+			{
+				"files",
+				"2.jpg",
+				f2,
+			},
+			{
+				"files",
+				"3.png",
+				f3,
+			},
+		},
+	)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Log(r.Data)
+}

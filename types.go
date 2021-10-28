@@ -2,6 +2,7 @@ package biligo
 
 import (
 	"encoding/json"
+	"io"
 )
 
 type Response struct {
@@ -1371,4 +1372,9 @@ type dynaCtrl struct {
 	Type     int    `json:"type"`
 	Length   int    `json:"length"`
 	Data     string `json:"data"`
+}
+type FileUpload struct {
+	field string
+	name  string
+	file  io.Reader
 }

@@ -1,11 +1,14 @@
 package biligo
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -52,7 +55,7 @@ func newBaseClient(setting *baseSetting) *baseClient {
 		debug:  setting.DebugMode,
 		client: client,
 		ua:     ua,
-		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags),
+		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags|log.Lshortfile),
 	}
 }
 
@@ -126,4 +129,76 @@ func (h *baseClient) parse(raw []byte) (*Response, error) {
 		return nil, fmt.Errorf("(%d) %s", result.Code, result.Message)
 	}
 	return result, nil
+}
+func (h *baseClient) upload(base, endpoint string, payload map[string]string, files []*FileUpload, mAfter func(m *multipart.Writer) error, reqAfter func(r *http.Request)) ([]byte, error) {
+	var (
+		req *http.Request
+		err error
+	)
+	link := base + endpoint
+
+	body := new(bytes.Buffer)
+	mp := multipart.NewWriter(body)
+
+	for _, f := range files {
+		var ff io.Writer
+		if ff, err = mp.CreateFormFile(f.field, f.name); err != nil {
+			return nil, err
+		}
+		if _, err = io.Copy(ff, f.file); err != nil {
+			return nil, err
+		}
+	}
+
+	for k, v := range payload {
+		if err = mp.WriteField(k, v); err != nil {
+			return nil, err
+		}
+	}
+
+	// 侵入处理field
+	if mAfter != nil {
+		if err = mAfter(mp); err != nil {
+			return nil, err
+		}
+	}
+
+	if err = mp.Close(); err != nil {
+		return nil, err
+	}
+
+	// 只支持POST
+	req, err = http.NewRequest("POST", link, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Origin", "https://www.bilibili.com")
+	req.Header.Add("Referer", "https://www.bilibili.com")
+	req.Header.Add("Content-type", mp.FormDataContentType())
+	req.Header.Add("User-Agent", h.ua)
+
+	// 侵入处理req
+	if reqAfter != nil {
+		reqAfter(req)
+	}
+
+	resp, err := h.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	resp.Close = true
+	defer resp.Body.Close()
+
+	raw, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if h.debug {
+		h.logger.Printf("url: %s value: %+v", link, mp)
+		h.logger.Printf("resp: %+v", string(raw))
+	}
+
+	return raw, nil
 }
