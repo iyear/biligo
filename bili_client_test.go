@@ -2,6 +2,7 @@ package biligo
 
 import (
 	"encoding/json"
+	"io"
 	"os"
 	"strconv"
 	"testing"
@@ -754,4 +755,37 @@ func TestBiliClient_UploadParse(t *testing.T) {
 		t.FailNow()
 	}
 	t.Log(r.Data)
+}
+func TestUploadPic(t *testing.T) {
+	f, _ := os.Open("./test_code/5.png")
+	_, err := testBiliClient.UploadParse(
+		BiliApiURL,
+		"x/dynamic/feed/draw/upload_bfs",
+		map[string]string{
+			"biz":      "dyn",
+			"category": "daily",
+		},
+		[]*FileUpload{{
+			Field: "file_up",
+			Name:  "1.gif",
+			File:  f,
+		}},
+	)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
+func TestBiliClient_DynaUploadPics(t *testing.T) {
+	f1, _ := os.Open("./test_code/1.jpg")
+	f2, _ := os.Open("./test_code/2.jpg")
+	f3, _ := os.Open("./test_code/3.png")
+	results, err := testBiliClient.DynaUploadPics([]io.Reader{f1, f2, f3})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, r := range results {
+		t.Logf("w: %d,h: %d,url: %s", r.ImageWidth, r.ImageHeight, r.ImageUrl)
+	}
 }

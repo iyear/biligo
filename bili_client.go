@@ -8,6 +8,7 @@ import (
 	"github.com/iyear/biligo/proto/dm"
 	"github.com/pkg/errors"
 	"github.com/tidwall/gjson"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -2230,4 +2231,38 @@ func (b *BiliClient) DynaLike(dyid int64, like bool) error {
 		},
 	)
 	return err
+}
+
+// DynaUploadPics 上传动态图片
+//
+// 接口一次只能传一张，该函数为循环上传，如有速度需求请使用并发实现
+//
+// 返回的结构体用于创建
+func (b *BiliClient) DynaUploadPics(pics []io.Reader) ([]*DynaUploadPic, error) {
+	var results []*DynaUploadPic
+	for _, p := range pics {
+		// 该接口一次只能传一张，循环发送
+		resp, err := b.UploadParse(
+			BiliApiURL,
+			"x/dynamic/feed/draw/upload_bfs",
+			map[string]string{
+				"biz":      "dyn",
+				"category": "daily",
+			},
+			[]*FileUpload{{
+				Field: "file_up",
+				Name:  "1.jpg", // B站通过文件头判断content-type，该字段无用
+				File:  p,
+			}},
+		)
+		if err != nil {
+			return nil, err
+		}
+		var r = &DynaUploadPic{}
+		if err = json.Unmarshal(resp.Data, &r); err != nil {
+			return nil, err
+		}
+		results = append(results, r)
+	}
+	return results, nil
 }
