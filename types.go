@@ -1366,3 +1366,9 @@ type FollowingsItem struct {
 		AvatarSubscriptURL string `json:"avatar_subscript_url"`
 	} `json:"vip"` // VIP信息
 }
+type dynaCtrl struct {
+	Location int    `json:"location"`
+	Type     int    `json:"type"`
+	Length   int    `json:"length"`
+	Data     string `json:"data"`
+}

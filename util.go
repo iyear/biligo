@@ -1,7 +1,11 @@
 package biligo
 
 import (
+	"fmt"
 	"math"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 const table = "fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF"
@@ -42,4 +46,32 @@ func AV2BV(av int64) string {
 		result += r[i]
 	}
 	return result
+}
+
+// parseDynaAt 由于ctrl的location是字符定位的，而FindAllStringIndex获取的是字节定位，只能遍历一遍拿到字符定位
+func parseDynaAt(tp int, content string, at map[string]int64) []*dynaCtrl {
+	match := regexp.MustCompile("@.*? ").FindAllStringIndex(content, -1)
+	var (
+		ctrl []*dynaCtrl
+		a    = 0
+		c    = 0
+	)
+	for i, t := range []rune(content) {
+		c += len(fmt.Sprintf("%c", t))
+		if c == match[a][0] {
+			up := strings.TrimPrefix(content[match[a][0]:match[a][1]], "@")
+			up = strings.TrimSuffix(up, " ")
+			ctrl = append(ctrl, &dynaCtrl{
+				Location: i + 1,
+				Type:     tp,
+				Length:   len([]rune(up)) + 2, // 之前删了@和空格，需要加回来
+				Data:     strconv.FormatInt(at[up], 10),
+			})
+			a++
+		}
+		if a == len(match) {
+			break
+		}
+	}
+	return ctrl
 }
