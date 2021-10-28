@@ -2139,7 +2139,7 @@ func (b *BiliClient) FollowUser(mid int64, follow bool) error {
 	return err
 }
 
-// DynaCreatePlain 创建普通动态
+// DynaCreatePlain 创建普通动态,返回创建的动态ID
 //
 // 具体请看测试样例
 //
@@ -2149,7 +2149,7 @@ func (b *BiliClient) FollowUser(mid int64, follow bool) error {
 //
 // at请使用 [@刘庸干净又卫生 ] 注意末尾空格
 //
-// at map 里需要本次动态at的用户名与mid的映射
+// at map 里提供本次动态at的用户名与mid的映射
 //
 // 话题直接用 #xxx# 包裹即可
 func (b *BiliClient) DynaCreatePlain(content string, at map[string]int64) (int64, error) {
@@ -2186,4 +2186,20 @@ func (b *BiliClient) DynaCreatePlain(content string, at map[string]int64) (int64
 		return -1, err
 	}
 	return D.DynamicID, nil
+}
+
+// DynaLike 点赞动态
+//
+// like true:点赞 false: 不点赞
+func (b *BiliClient) DynaLike(dyid int64, like bool) error {
+	_, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_like/v1/dynamic_like/thumb",
+		"POST",
+		map[string]string{
+			"dynamic_id": strconv.FormatInt(dyid, 10),
+			"up":         util.IF(like, "1", "2").(string),
+		},
+	)
+	return err
 }

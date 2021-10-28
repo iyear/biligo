@@ -142,6 +142,7 @@ func main() {
 - `mlid` - `收藏夹ID`
 - `auid` - `音频ID`
 - `dmid` - `弹幕ID`
+- `dyid` - `动态ID`
 - `oid` - 根据上下文不同分别指代以上不同的ID，具体看注释
 - `ID` 而不是 `Id`
 - `URL` 而不是 `Url`

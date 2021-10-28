@@ -712,3 +712,10 @@ func TestBiliClient_DynaCreatePlain(t *testing.T) {
 	// 586276367485776990
 	t.Log(id)
 }
+func TestBiliClient_DynaLike(t *testing.T) {
+	err := testBiliClient.DynaLike(586467484938029595, true)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
