@@ -55,19 +55,38 @@ func newBaseClient(setting *baseSetting) *baseClient {
 		debug:  setting.DebugMode,
 		client: client,
 		ua:     ua,
-		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags|log.Lshortfile),
+		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags),
 	}
 }
 
+// request v为携带的参数，用于debug输出
+func (h *baseClient) request(req *http.Request, v interface{}) ([]byte, error) {
+	resp, err := h.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	resp.Close = true
+	defer resp.Body.Close()
+
+	raw, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if h.debug {
+		h.logger.Printf("%s %s  %+v", req.Method, req.URL, v)
+		h.logger.Printf("%s", string(raw))
+	}
+
+	return raw, nil
+}
 func (h *baseClient) raw(base, endpoint, method string, payload map[string]string, dAfter func(d *url.Values), reqAfter func(r *http.Request)) ([]byte, error) {
 	var (
-		req  *http.Request
-		err  error
-		data url.Values
+		req *http.Request
+		err error
 	)
-	link := base + endpoint
 
-	data = url.Values{}
+	data := url.Values{}
 	for k, v := range payload {
 		data.Add(k, v)
 	}
@@ -77,16 +96,15 @@ func (h *baseClient) raw(base, endpoint, method string, payload map[string]strin
 		dAfter(&data)
 	}
 
+	link := base + endpoint
 	switch method {
-	case "GET":
-		req, err = http.NewRequest(method, link, nil)
-		if err != nil {
+	case http.MethodGet:
+		if req, err = http.NewRequest(method, link, nil); err != nil {
 			return nil, err
 		}
 		req.URL.RawQuery = data.Encode()
-	case "POST":
-		req, err = http.NewRequest(method, link, strings.NewReader(data.Encode()))
-		if err != nil {
+	case http.MethodPost:
+		if req, err = http.NewRequest(method, link, strings.NewReader(data.Encode())); err != nil {
 			return nil, err
 		}
 	}
@@ -101,24 +119,7 @@ func (h *baseClient) raw(base, endpoint, method string, payload map[string]strin
 		reqAfter(req)
 	}
 
-	resp, err := h.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	resp.Close = true
-	defer resp.Body.Close()
-
-	raw, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if h.debug {
-		h.logger.Printf("url: %s value: %+v", link, data)
-		h.logger.Printf("resp: %+v", string(raw))
-	}
-
-	return raw, nil
+	return h.request(req, payload)
 }
 func (h *baseClient) parse(raw []byte) (*Response, error) {
 	var result = &Response{}
@@ -163,13 +164,13 @@ func (h *baseClient) upload(base, endpoint string, payload map[string]string, fi
 		}
 	}
 
+	// 为mp添加结束符
 	if err = mp.Close(); err != nil {
 		return nil, err
 	}
 
 	// 只支持POST
-	req, err = http.NewRequest("POST", link, body)
-	if err != nil {
+	if req, err = http.NewRequest(http.MethodPost, link, body); err != nil {
 		return nil, err
 	}
 
@@ -183,22 +184,6 @@ func (h *baseClient) upload(base, endpoint string, payload map[string]string, fi
 		reqAfter(req)
 	}
 
-	resp, err := h.client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	resp.Close = true
-	defer resp.Body.Close()
-
-	raw, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if h.debug {
-		h.logger.Printf("url: %s value: %+v", link, mp)
-		h.logger.Printf("resp: %+v", string(raw))
-	}
-
-	return raw, nil
+	// 文件不输出，否则全是乱码
+	return h.request(req, payload)
 }
