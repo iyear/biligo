@@ -143,10 +143,10 @@ func (h *baseClient) upload(base, endpoint string, payload map[string]string, fi
 
 	for _, f := range files {
 		var ff io.Writer
-		if ff, err = mp.CreateFormFile(f.field, f.name); err != nil {
+		if ff, err = mp.CreateFormFile(f.Field, f.Name); err != nil {
 			return nil, err
 		}
-		if _, err = io.Copy(ff, f.file); err != nil {
+		if _, err = io.Copy(ff, f.File); err != nil {
 			return nil, err
 		}
 	}

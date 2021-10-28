@@ -1374,7 +1374,7 @@ type dynaCtrl struct {
 	Data     string `json:"data"`
 }
 type FileUpload struct {
-	field string
-	name  string
-	file  io.Reader
+	Field string
+	Name  string
+	File  io.Reader
 }
