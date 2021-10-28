@@ -685,3 +685,30 @@ func TestBiliClient_FollowingsGetMyDetail(t *testing.T) {
 		t.Logf("mid: %d,uname: %s", l.MID, l.Uname)
 	}
 }
+func TestParseDynaAt(t *testing.T) {
+	ctrls := parseDynaAt(
+		1,
+		"aaaa[doge][doge][热词系列_好耶]sssss[热词系列_再来亿遍][热词系列_好活][tv_惊吓]aa[tv_惊吓]dsaaa[tv_惊吓]@刘庸干净又卫生 @刘庸干净又卫生 @锤子啊二条 #入站必刷# aaaa",
+		map[string]int64{
+			"刘庸干净又卫生": 533459953,
+			"锤子啊二条":   473056459,
+		},
+	)
+	for _, c := range ctrls {
+		t.Logf("loc: %d,len: %d,data: %s", c.Location, c.Length, c.Data)
+	}
+}
+func TestBiliClient_DynaCreatePlain(t *testing.T) {
+	id, err := testBiliClient.DynaCreatePlain(
+		"7777a[doge]aaaaaa[热词系列_好活]test[tv_惊吓]aa[tv_惊吓]test[tv_惊吓]@刘庸干净又卫生 @刘庸干净又卫生 @锤子啊二条 #入站必刷# ssssss",
+		map[string]int64{
+			"刘庸干净又卫生": 533459953,
+			"锤子啊二条":   473056459,
+		})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	// 586276367485776990
+	t.Log(id)
+}

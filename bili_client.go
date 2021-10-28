@@ -2138,3 +2138,52 @@ func (b *BiliClient) FollowUser(mid int64, follow bool) error {
 	)
 	return err
 }
+
+// DynaCreatePlain 创建普通动态
+//
+// 具体请看测试样例
+//
+// 支持表情、at、话题
+//
+// 表情请使用 EmotePackGetMy 获取
+//
+// at请使用 [@刘庸干净又卫生 ] 注意末尾空格
+//
+// at map 里需要本次动态at的用户名与mid的映射
+//
+// 话题直接用 #xxx# 包裹即可
+func (b *BiliClient) DynaCreatePlain(content string, at map[string]int64) (int64, error) {
+	var ids []int64
+	for _, id := range at {
+		ids = append(ids, id)
+	}
+
+	ctrl, err := json.Marshal(parseDynaAt(1, content, at))
+	if err != nil {
+		return -1, err
+	}
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_svr/v1/dynamic_svr/create",
+		"POST",
+		map[string]string{
+			"dynamic_id": "0",
+			"type":       "4",
+			"rid":        "0",
+			"content":    content,
+			"at_uids":    util.Int64SliceToString(ids, ","),
+			"ctrl":       string(ctrl),
+		},
+	)
+	if err != nil {
+		return -1, err
+	}
+
+	var D struct {
+		DynamicID int64 `json:"dynamic_id"`
+	}
+	if err = json.Unmarshal(resp.Data, &D); err != nil {
+		return -1, err
+	}
+	return D.DynamicID, nil
+}
