@@ -700,8 +700,28 @@ func TestParseDynaAt(t *testing.T) {
 	}
 }
 func TestBiliClient_DynaCreatePlain(t *testing.T) {
+	r := `
+da
+das
+
+saddsdaa[doge][doge][doge][doge][doge][doge]
+asdas#入站必刷##入站必刷##入站必刷##入站必刷#
+[doge][doge][doge][doge]@刘庸干净又卫生 @刘庸干净又卫生 
+sada
+@刘庸干净又卫生 @刘庸干净又卫生 @刘庸干净又卫生 
+das
+d
+@锤子啊二条 
+@锤子啊二条 @锤子啊二条 @锤子啊二条 @锤子啊二条 
+[doge][doge][doge][doge][doge]
+[doge]
+asddasddad
+
+
+sdas
+`
 	id, err := testBiliClient.DynaCreatePlain(
-		"7777a[doge]aaaaaa[热词系列_好活]test[tv_惊吓]aa[tv_惊吓]test[tv_惊吓]@刘庸干净又卫生 @刘庸干净又卫生 @锤子啊二条 #入站必刷# ssssss",
+		r,
 		map[string]int64{
 			"刘庸干净又卫生": 533459953,
 			"锤子啊二条":   473056459,
