@@ -2356,7 +2356,9 @@ func (b *BiliClient) DynaDel(dyid int64) error {
 	return err
 }
 
-// DynaCreateDraft 创建定时发布任务
+// DynaCreateDraft 创建定时发布动态
+//
+// 返回draft id
 //
 // content,at 同 DynaCreatePlain
 //
@@ -2414,4 +2416,54 @@ func (b *BiliClient) DynaCreateDraft(content string, at map[string]int64, pic []
 		return -1, err
 	}
 	return D.DraftID, nil
+}
+
+// DynaModifyDraft 修改定时发布动态
+//
+// dfid 定时发布ID
+//
+// 其他参数同 DynaCreateDraft
+func (b *BiliClient) DynaModifyDraft(dfid int64, content string, at map[string]int64, pic []*DynaUploadPic, publish int64) error {
+	var ids []int64
+	for _, id := range at {
+		ids = append(ids, id)
+	}
+
+	ctrl, err := json.Marshal(parseDynaAt(1, content, at))
+	if err != nil {
+		return err
+	}
+
+	pj, err := genDynaPic(pic)
+	if err != nil {
+		return err
+	}
+
+	request, err := json.Marshal(&dynaDraft{
+		Biz:         3,
+		Category:    3,
+		Type:        0,
+		Pictures:    pj,
+		Description: content,
+		Content:     content,
+		From:        "create.dynamic.web",
+		AtUIDs:      util.Int64SliceToString(ids, ","),
+		AtControl:   string(ctrl),
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = b.RawParse(
+		BiliVcURL,
+		"dynamic_draft/v1/dynamic_draft/modify_draft",
+		"POST",
+		map[string]string{
+			"draft_id":     strconv.FormatInt(dfid, 10),
+			"type":         "2",
+			"publish_time": strconv.FormatInt(publish, 10),
+			"request":      string(request),
+		},
+	)
+	return err
 }
