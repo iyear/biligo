@@ -85,7 +85,7 @@ func genDynaPic(pics []*DynaUploadPic) (string, error) {
 			ImageHeight: p.ImageHeight,
 		})
 	}
-	j, err := json.Marshal(pics)
+	j, err := json.Marshal(pic)
 	if err != nil {
 		return "", err
 	}
