@@ -51,7 +51,6 @@ func AV2BV(av int64) string {
 // parseDynaAt 由于ctrl的location是字符定位的，而FindAllStringIndex获取的是字节定位，只能遍历一遍拿到字符定位
 func parseDynaAt(tp int, content string, at map[string]int64) []*dynaCtrl {
 	match := regexp.MustCompile("@.*? ").FindAllStringIndex(content, -1)
-	fmt.Println(match)
 	var (
 		ctrl []*dynaCtrl
 		a    = 0
