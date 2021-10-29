@@ -2482,3 +2482,34 @@ func (b *BiliClient) DynaDelDraft(dfid int64) error {
 	)
 	return err
 }
+
+// DynaPublishDraft 立即发布定时动态
+//
+// 返回发布的动态ID
+//
+// dfid 定时发布ID
+func (b *BiliClient) DynaPublishDraft(dfid int64) (int64, error) {
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_draft/v1/dynamic_draft/publish_now",
+		"POST",
+		map[string]string{
+			"draft_id": strconv.FormatInt(dfid, 10),
+		},
+	)
+	if err != nil {
+		return -1, err
+	}
+	var r struct {
+		DynamicID int64 `json:"dynamic_id"`
+		CreateEc  int   `json:"create_ec"`
+	}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return -1, err
+	}
+	// 一些特殊情况导致发布失败，还有一层错误需要判断
+	if r.CreateEc != 0 {
+		return -1, fmt.Errorf("(%d) publish error", r.CreateEc)
+	}
+	return r.DynamicID, nil
+}

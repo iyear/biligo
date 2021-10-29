@@ -915,3 +915,11 @@ func TestBiliClient_DynaDelDraft(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_DynaPublishDraft(t *testing.T) {
+	id, err := testBiliClient.DynaPublishDraft(380073)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Log(id)
+}
