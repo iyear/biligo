@@ -2273,11 +2273,6 @@ func (b *BiliClient) DynaUploadPics(pics []io.Reader) ([]*DynaUploadPic, error) 
 //
 // pics 从 DynaUploadPics 获取
 func (b *BiliClient) DynaCreateDraw(content string, at map[string]int64, pic []*DynaUploadPic) (int64, error) {
-	type dynaPic struct {
-		ImgSrc      string `json:"img_src"`
-		ImageWidth  int    `json:"img_width"`
-		ImageHeight int    `json:"img_height"`
-	}
 	var ids []int64
 	for _, id := range at {
 		ids = append(ids, id)
@@ -2367,4 +2362,72 @@ func (b *BiliClient) DynaDel(dyid int64) error {
 		},
 	)
 	return err
+}
+
+// DynaCreateDraft 创建定时发布任务
+//
+// content,at 同 DynaCreatePlain
+//
+// pics 从 DynaUploadPics 获取
+//
+// publish 为指定发布的时间戳,换算后为东八区
+func (b *BiliClient) DynaCreateDraft(content string, at map[string]int64, pic []*DynaUploadPic, publish int64) (int64, error) {
+	var ids []int64
+	for _, id := range at {
+		ids = append(ids, id)
+	}
+
+	ctrl, err := json.Marshal(parseDynaAt(1, content, at))
+	if err != nil {
+		return -1, err
+	}
+
+	var pics []*dynaPic
+	for _, p := range pic {
+		pics = append(pics, &dynaPic{
+			ImgSrc:      p.ImageURL,
+			ImageWidth:  p.ImageWidth,
+			ImageHeight: p.ImageHeight,
+		})
+	}
+	pJson, err := json.Marshal(pics)
+	if err != nil {
+		return -1, err
+	}
+
+	request, err := json.Marshal(&dynaDraft{
+		Biz:         3,
+		Category:    3,
+		Type:        0,
+		Pictures:    string(pJson),
+		Description: content,
+		Content:     content,
+		From:        "create.dynamic.web",
+		AtUIDs:      util.Int64SliceToString(ids, ","),
+		AtControl:   string(ctrl),
+	})
+	if err != nil {
+		return -1, err
+	}
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_draft/v1/dynamic_draft/add_draft",
+		"POST",
+		map[string]string{
+			"type":         "4",
+			"publish_time": strconv.FormatInt(publish, 10),
+			"request":      string(request),
+		},
+	)
+	if err != nil {
+		return -1, err
+	}
+
+	var D struct {
+		DraftID int64 `json:"draft_id"`
+	}
+	if err = json.Unmarshal(resp.Data, &D); err != nil {
+		return -1, err
+	}
+	return D.DraftID, nil
 }

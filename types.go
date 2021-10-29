@@ -1383,3 +1383,19 @@ type DynaUploadPic struct {
 	ImageWidth  int    `json:"image_width"`
 	ImageHeight int    `json:"image_height"`
 }
+type dynaPic struct {
+	ImgSrc      string `json:"img_src"`
+	ImageWidth  int    `json:"img_width"`
+	ImageHeight int    `json:"img_height"`
+}
+type dynaDraft struct {
+	Biz         int    `json:"biz"`
+	Category    int    `json:"category"`
+	Type        int    `json:"type"`
+	Pictures    string `json:"pictures"`
+	Description string `json:"description"`
+	From        string `json:"from"`
+	Content     string `json:"content"`
+	AtUIDs      string `json:"at_uids"`
+	AtControl   string `json:"at_control"`
+}
