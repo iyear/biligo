@@ -2266,3 +2266,63 @@ func (b *BiliClient) DynaUploadPics(pics []io.Reader) ([]*DynaUploadPic, error) 
 	}
 	return results, nil
 }
+
+// DynaCreateDraw 创建图片动态
+//
+// content,at 同 DynaCreatePlain
+//
+// pics 从 DynaUploadPics 获取
+func (b *BiliClient) DynaCreateDraw(content string, at map[string]int64, pic []*DynaUploadPic) (int64, error) {
+	type dynaPic struct {
+		ImgSrc      string `json:"img_src"`
+		ImageWidth  int    `json:"img_width"`
+		ImageHeight int    `json:"img_height"`
+	}
+	var ids []int64
+	for _, id := range at {
+		ids = append(ids, id)
+	}
+
+	ctrl, err := json.Marshal(parseDynaAt(1, content, at))
+	if err != nil {
+		return -1, err
+	}
+
+	var pics []*dynaPic
+	for _, p := range pic {
+		pics = append(pics, &dynaPic{
+			ImgSrc:      p.ImageURL,
+			ImageWidth:  p.ImageWidth,
+			ImageHeight: p.ImageHeight,
+		})
+	}
+	pJson, err := json.Marshal(pics)
+	if err != nil {
+		return -1, err
+	}
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_svr/v1/dynamic_svr/create_draw",
+		"POST",
+		map[string]string{
+			"biz":        "3",
+			"category":   "3",
+			"type":       "0",
+			"pictures":   string(pJson),
+			"content":    content,
+			"at_uids":    util.Int64SliceToString(ids, ","),
+			"at_control": string(ctrl),
+		},
+	)
+	if err != nil {
+		return -1, err
+	}
+
+	var D struct {
+		DynamicID int64 `json:"dynamic_id"`
+	}
+	if err = json.Unmarshal(resp.Data, &D); err != nil {
+		return -1, err
+	}
+	return D.DynamicID, nil
+}
