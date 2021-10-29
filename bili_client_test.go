@@ -790,19 +790,32 @@ func TestBiliClient_DynaUploadPics(t *testing.T) {
 	}
 }
 func TestBiliClient_DynaCreateDraw(t *testing.T) {
-	id, err := testBiliClient.DynaCreateDraw("@刘庸干净又卫生 tasasat[doge][呲牙][呲牙]aaa[呲牙]@锤子啊二条 #入站必刷#", map[string]int64{
-		"刘庸干净又卫生": 533459953,
-		"锤子啊二条":   473056459,
-	}, []*DynaUploadPic{
-		{
-			ImageURL:    "http://i0.hdslb.com/bfs/album/062c99566c380bc0c4e5246a5e823791c7800b67.jpg",
-			ImageWidth:  4300,
-			ImageHeight: 3040,
-		},
-	})
+	id, err := testBiliClient.DynaCreateDraw("aaaa[doge][doge][doge]@刘庸干净又卫生 ",
+		map[string]int64{
+			"刘庸干净又卫生": 533459953,
+			"锤子啊二条":   473056459,
+		}, []*DynaUploadPic{
+			{
+				ImageURL:    "http://i0.hdslb.com/bfs/album/062c99566c380bc0c4e5246a5e823791c7800b67.jpg",
+				ImageWidth:  4300,
+				ImageHeight: 3040,
+			},
+		})
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 	t.Log(id)
+}
+func TestBiliClient_DynaRepost(t *testing.T) {
+	err := testBiliClient.DynaRepost(374730265881334172,
+		"aaaa[doge][doge][doge]@刘庸干净又卫生 ",
+		map[string]int64{
+			"刘庸干净又卫生": 533459953,
+			"锤子啊二条":   473056459,
+		})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 }

@@ -2326,3 +2326,30 @@ func (b *BiliClient) DynaCreateDraw(content string, at map[string]int64, pic []*
 	}
 	return D.DynamicID, nil
 }
+
+// DynaRepost 转发动态
+//
+// dyid 为转发的动态ID
+func (b *BiliClient) DynaRepost(dyid int64, content string, at map[string]int64) error {
+	var ids []int64
+	for _, id := range at {
+		ids = append(ids, id)
+	}
+
+	ctrl, err := json.Marshal(parseDynaAt(1, content, at))
+	if err != nil {
+		return err
+	}
+	_, err = b.RawParse(
+		BiliVcURL,
+		"dynamic_repost/v1/dynamic_repost/repost",
+		"POST",
+		map[string]string{
+			"dynamic_id": strconv.FormatInt(dyid, 10),
+			"content":    content,
+			"at_uids":    util.Int64SliceToString(ids, ","),
+			"ctrl":       string(ctrl),
+		},
+	)
+	return err
+}
