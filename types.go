@@ -1379,7 +1379,7 @@ type FileUpload struct {
 	File  io.Reader
 }
 type DynaUploadPic struct {
-	ImageUrl    string `json:"image_url"`
+	ImageURL    string `json:"image_url"`
 	ImageWidth  int    `json:"image_width"`
 	ImageHeight int    `json:"image_height"`
 }
