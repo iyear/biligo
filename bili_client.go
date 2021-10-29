@@ -2513,3 +2513,23 @@ func (b *BiliClient) DynaPublishDraft(dfid int64) (int64, error) {
 	}
 	return r.DynamicID, nil
 }
+
+// DynaGetDrafts
+//
+// 获取所有定时发布动态
+func (b *BiliClient) DynaGetDrafts() (*DynaGetDraft, error) {
+	resp, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_draft/v1/dynamic_draft/get_drafts",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &DynaGetDraft{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

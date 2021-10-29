@@ -923,3 +923,15 @@ func TestBiliClient_DynaPublishDraft(t *testing.T) {
 	}
 	t.Log(id)
 }
+func TestBiliClient_DynaGetDrafts(t *testing.T) {
+	drafts, err := testBiliClient.DynaGetDrafts()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	for _, df := range drafts.Drafts {
+		t.Logf("uid: %d,uname: %s", df.UID, df.UserProfile.Info.Uname)
+		t.Logf("dfid: %d,status: %d,publish: %d", df.DraftID, df.PublishStatus, df.PublishTime)
+	}
+}

@@ -1399,3 +1399,56 @@ type dynaDraft struct {
 	AtUIDs      string `json:"at_uids"`
 	AtControl   string `json:"at_control"`
 }
+type DynaGetDraft struct {
+	Drafts []*DynaDraft `json:"drafts"`
+}
+type DynaDraft struct {
+	DraftID       int64           `json:"draft_id"`       // 定时发布ID
+	UID           int64           `json:"uid"`            // mid
+	Type          int             `json:"type"`           // 未知
+	PublishTime   int64           `json:"publish_time"`   // 指定发布时间
+	Request       json.RawMessage `json:"request"`        // 动态信息，不同动态类型内容不同，请根据需要自行提取
+	UpdateTime    int64           `json:"update_time"`    // 动态更新时间
+	PublishStatus int             `json:"publish_status"` // 发布状态 0:未发布 3:错误?
+	ErrorCode     int             `json:"error_code"`     // 动态错误码 0:无错误 500003:系统错误
+	ErrorMsg      string          `json:"error_msg"`      // 动态错误描述
+	UserProfile   *struct {
+		Info *struct {
+			UID   int64  `json:"uid"`
+			Uname string `json:"uname"`
+			Face  string `json:"face"`
+		} `json:"info"`
+		Card *struct {
+			OfficialVerify *struct {
+				Type int    `json:"type"`
+				Desc string `json:"desc"`
+			} `json:"official_verify"`
+		} `json:"card"`
+		Vip *struct {
+			VipType    int `json:"vipType"`
+			VipDueDate int `json:"vipDueDate"`
+			VipStatus  int `json:"vipStatus"`
+			ThemeType  int `json:"themeType"`
+			Label      *struct {
+				Path       string `json:"path"`
+				Text       string `json:"text"`
+				LabelTheme string `json:"label_theme"`
+			} `json:"label"`
+			AvatarSubscript int    `json:"avatar_subscript"`
+			NicknameColor   string `json:"nickname_color"`
+		} `json:"vip"`
+		Pendant *struct {
+			PID               int64  `json:"pid"`
+			Name              string `json:"name"`
+			Image             string `json:"image"`
+			Expire            int    `json:"expire"`
+			ImageEnhance      string `json:"image_enhance"`
+			ImageEnhanceFrame string `json:"image_enhance_frame"`
+		} `json:"pendant"`
+		Rank      string `json:"rank"`
+		Sign      string `json:"sign"`
+		LevelInfo *struct {
+			CurrentLevel int `json:"current_level"`
+		} `json:"level_info"`
+	} `json:"user_profile"` // 动态作者各种信息
+}
