@@ -2283,15 +2283,7 @@ func (b *BiliClient) DynaCreateDraw(content string, at map[string]int64, pic []*
 		return -1, err
 	}
 
-	var pics []*dynaPic
-	for _, p := range pic {
-		pics = append(pics, &dynaPic{
-			ImgSrc:      p.ImageURL,
-			ImageWidth:  p.ImageWidth,
-			ImageHeight: p.ImageHeight,
-		})
-	}
-	pJson, err := json.Marshal(pics)
+	pj, err := genDynaPic(pic)
 	if err != nil {
 		return -1, err
 	}
@@ -2303,7 +2295,7 @@ func (b *BiliClient) DynaCreateDraw(content string, at map[string]int64, pic []*
 			"biz":        "3",
 			"category":   "3",
 			"type":       "0",
-			"pictures":   string(pJson),
+			"pictures":   pj,
 			"content":    content,
 			"at_uids":    util.Int64SliceToString(ids, ","),
 			"at_control": string(ctrl),
@@ -2382,15 +2374,7 @@ func (b *BiliClient) DynaCreateDraft(content string, at map[string]int64, pic []
 		return -1, err
 	}
 
-	var pics []*dynaPic
-	for _, p := range pic {
-		pics = append(pics, &dynaPic{
-			ImgSrc:      p.ImageURL,
-			ImageWidth:  p.ImageWidth,
-			ImageHeight: p.ImageHeight,
-		})
-	}
-	pJson, err := json.Marshal(pics)
+	pj, err := genDynaPic(pic)
 	if err != nil {
 		return -1, err
 	}
@@ -2399,7 +2383,7 @@ func (b *BiliClient) DynaCreateDraft(content string, at map[string]int64, pic []
 		Biz:         3,
 		Category:    3,
 		Type:        0,
-		Pictures:    string(pJson),
+		Pictures:    pj,
 		Description: content,
 		Content:     content,
 		From:        "create.dynamic.web",

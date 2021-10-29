@@ -1,6 +1,7 @@
 package biligo
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"regexp"
@@ -74,4 +75,19 @@ func parseDynaAt(tp int, content string, at map[string]int64) []*dynaCtrl {
 		c += len(fmt.Sprintf("%c", t))
 	}
 	return ctrl
+}
+func genDynaPic(pics []*DynaUploadPic) (string, error) {
+	var pic []*dynaPic
+	for _, p := range pics {
+		pic = append(pic, &dynaPic{
+			ImgSrc:      p.ImageURL,
+			ImageWidth:  p.ImageWidth,
+			ImageHeight: p.ImageHeight,
+		})
+	}
+	j, err := json.Marshal(pics)
+	if err != nil {
+		return "", err
+	}
+	return string(j), nil
 }
