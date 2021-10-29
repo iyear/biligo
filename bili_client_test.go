@@ -908,3 +908,10 @@ asddas
 		t.FailNow()
 	}
 }
+func TestBiliClient_DynaDelDraft(t *testing.T) {
+	err := testBiliClient.DynaDelDraft(380555)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}

@@ -2467,3 +2467,18 @@ func (b *BiliClient) DynaModifyDraft(dfid int64, content string, at map[string]i
 	)
 	return err
 }
+
+// DynaDelDraft 删除定时发布动态
+//
+// dfid 定时发布ID
+func (b *BiliClient) DynaDelDraft(dfid int64) error {
+	_, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_draft/v1/dynamic_draft/rm_draft",
+		"POST",
+		map[string]string{
+			"draft_id": strconv.FormatInt(dfid, 10),
+		},
+	)
+	return err
+}
