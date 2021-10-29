@@ -2353,3 +2353,18 @@ func (b *BiliClient) DynaRepost(dyid int64, content string, at map[string]int64)
 	)
 	return err
 }
+
+// DynaDel
+//
+// 删除动态
+func (b *BiliClient) DynaDel(dyid int64) error {
+	_, err := b.RawParse(
+		BiliVcURL,
+		"dynamic_svr/v1/dynamic_svr/rm_dynamic",
+		"POST",
+		map[string]string{
+			"dynamic_id": strconv.FormatInt(dyid, 10),
+		},
+	)
+	return err
+}

@@ -819,3 +819,10 @@ func TestBiliClient_DynaRepost(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_DynaDel(t *testing.T) {
+	err := testBiliClient.DynaDel(586918142975022698)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
