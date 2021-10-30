@@ -460,7 +460,7 @@ func TestCommClient_ChargeVideoList(t *testing.T) {
 	}
 }
 func TestCommClient_LiveRoomInfo(t *testing.T) {
-	info, err := testCommClient.LiveGetRoomInfo(282994)
+	info, err := testCommClient.LiveGetRoomInfoByMID(436473455)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

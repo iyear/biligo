@@ -1316,9 +1316,9 @@ type LiveRoomInfo struct {
 	Title         string `json:"title"`          // 直播间标题
 	Cover         string `json:"cover"`          // 直播间封面url
 	Online        int    `json:"online"`         // 直播间人气 值为上次直播时刷新
-	RoomID        int    `json:"roomid"`         // 直播间id（短号）
+	RoomID        int    `json:"roomid"`         // 直播间id(真实ID)
 	BroadcastType int    `json:"broadcast_type"` // 0
-	OnlineHidden  int    `json:"online_hidden"`  // 0
+	OnlineHidden  int    `json:"online_hidden"`  // 已废弃
 }
 type FollowingsDetail struct {
 	ReVersion int               `json:"re_version"` // 0
