@@ -497,3 +497,15 @@ func TestCommClient_LiveGetRoomInfoByID2(t *testing.T) {
 	}
 	t.Logf("id: %d,short: %d,uid: %d,status: %d,time: %d", r.RoomID, r.ShortID, r.UID, r.LiveStatus, r.LiveTime)
 }
+func TestCommClient_LiveGetWsConf(t *testing.T) {
+	r, err := testCommClient.LiveGetWsConf(287083)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("host: %s,port: %d,delay: %d,rate: %d", r.Host, r.Port, r.MaxDelay, r.RefreshRate)
+	t.Logf("token: %s", r.Token)
+	for _, s := range r.ServerList {
+		t.Logf("\thost: %s,port: %d", s.Host, s.Port)
+	}
+}

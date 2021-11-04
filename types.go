@@ -1472,3 +1472,21 @@ type LiveRoomInfoByID struct {
 	SpecialType     int   `json:"special_type"`
 	AllSpecialTypes []int `json:"all_special_types"`
 }
+type LiveWsConf struct {
+	RefreshRowFactor float64 `json:"refresh_row_factor"`
+	RefreshRate      int     `json:"refresh_rate"`
+	MaxDelay         int     `json:"max_delay"`
+	Port             int     `json:"port"`
+	Host             string  `json:"host"`
+	HostServerList   []*struct {
+		Host    string `json:"host"`
+		Port    int    `json:"port"`
+		WssPort int    `json:"wss_port"`
+		WsPort  int    `json:"ws_port"`
+	} `json:"host_server_list"`
+	ServerList []*struct {
+		Host string `json:"host"`
+		Port int    `json:"port"`
+	} `json:"server_list"`
+	Token string `json:"token"`
+}

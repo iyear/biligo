@@ -1120,3 +1120,25 @@ func (c *CommClient) LiveGetRoomInfoByID(roomID int64) (*LiveRoomInfoByID, error
 	}
 	return r, nil
 }
+
+// LiveGetWsConf 获取直播websocket服务器信息
+//
+// roomID: 真实直播间ID
+func (c *CommClient) LiveGetWsConf(roomID int64) (*LiveWsConf, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"room/v1/Danmu/getConf",
+		"GET",
+		map[string]string{
+			"room_id": strconv.FormatInt(roomID, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LiveWsConf{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
