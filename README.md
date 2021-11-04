@@ -24,6 +24,7 @@
 - 完善的单元测试，易懂的函数命名，极少的第三方库依赖
 - 代码、结构体注释完善，无需文档开箱即用
 - 其他功能性代码，例如 `AV/BV`互转，`GetVideoZone()`获取分区信息...
+- 配套工具 [biligo-live](https://github.com/iyear/biligo-live) 封装直播 `WebSocket` 协议
 ### 说明
 
 - 该项目永远不会编写直接涉及滥用的接口
