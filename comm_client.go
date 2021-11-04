@@ -1078,7 +1078,7 @@ func (c *CommClient) ChargeVideoGetList(mid int64, aid int64) (*ChargeVideoList,
 // LiveGetRoomInfoByMID
 //
 // 从mid获取直播间信息
-func (c *CommClient) LiveGetRoomInfoByMID(mid int64) (*LiveRoomInfo, error) {
+func (c *CommClient) LiveGetRoomInfoByMID(mid int64) (*LiveRoomInfoByMID, error) {
 	resp, err := c.RawParse(
 		BiliApiURL,
 		"x/space/acc/info",
@@ -1091,10 +1091,32 @@ func (c *CommClient) LiveGetRoomInfoByMID(mid int64) (*LiveRoomInfo, error) {
 		return nil, err
 	}
 	var info struct {
-		LiveRoom *LiveRoomInfo `json:"live_room"`
+		LiveRoom *LiveRoomInfoByMID `json:"live_room"`
 	}
 	if err = json.Unmarshal(resp.Data, &info); err != nil {
 		return nil, err
 	}
 	return info.LiveRoom, nil
+}
+
+// LiveGetRoomInfoByID 从roomID获取直播间信息
+//
+// roomID 可为短号也可以是真实房号
+func (c *CommClient) LiveGetRoomInfoByID(roomID int64) (*LiveRoomInfoByID, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/web-room/v1/index/getRoomPlayInfo",
+		"GET",
+		map[string]string{
+			"room_id": strconv.FormatInt(roomID, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LiveRoomInfoByID{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
 }

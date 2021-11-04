@@ -481,3 +481,19 @@ func TestCommClient_FollowingsGetDetail(t *testing.T) {
 		t.Logf("mid: %d,uname: %s", l.MID, l.Uname)
 	}
 }
+func TestCommClient_LiveGetRoomInfoByID(t *testing.T) {
+	r, err := testCommClient.LiveGetRoomInfoByID(1)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("id: %d,short: %d,uid: %d,status: %d,time: %d", r.RoomID, r.ShortID, r.UID, r.LiveStatus, r.LiveTime)
+}
+func TestCommClient_LiveGetRoomInfoByID2(t *testing.T) {
+	r, err := testCommClient.LiveGetRoomInfoByID(287083)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("id: %d,short: %d,uid: %d,status: %d,time: %d", r.RoomID, r.ShortID, r.UID, r.LiveStatus, r.LiveTime)
+}

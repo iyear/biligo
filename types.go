@@ -1308,7 +1308,7 @@ type ChargeQrCodeStatus struct {
 	// 3：未确认
 	Status int `json:"status"`
 }
-type LiveRoomInfo struct {
+type LiveRoomInfoByMID struct {
 	RoomStatus    int    `json:"roomStatus"`     // 直播间状态 0：无房间 1：有房间
 	RoundStatus   int    `json:"roundStatus"`    // 轮播状态 0：未轮播 1：轮播
 	LiveStatus    int    `json:"liveStatus"`     // 直播状态 0：未开播 1：直播中
@@ -1451,4 +1451,24 @@ type DynaDraft struct {
 			CurrentLevel int `json:"current_level"`
 		} `json:"level_info"`
 	} `json:"user_profile"` // 动态作者各种信息
+}
+
+type LiveRoomInfoByID struct {
+	RoomID          int64 `json:"room_id"`      // 真实直播间ID
+	ShortID         int   `json:"short_id"`     // 短号
+	UID             int64 `json:"uid"`          // 主播mid
+	NeedP2P         int   `json:"need_p2p"`     // 需要P2P
+	IsHidden        bool  `json:"is_hidden"`    // 直播间是否隐藏
+	IsLocked        bool  `json:"is_locked"`    // 直播间是否被封锁
+	IsPortrait      bool  `json:"is_portrait"`  // 是否为竖屏直播间
+	LiveStatus      int   `json:"live_status"`  // 0:未开播 1:开播
+	HiddenTill      int64 `json:"hidden_till"`  // 隐藏截止时间戳?
+	LockTill        int64 `json:"lock_till"`    // 封锁截止时间戳?
+	Encrypted       bool  `json:"encrypted"`    // 直播间是否加密
+	PwdVerified     bool  `json:"pwd_verified"` // 直播间是否需要密码验证
+	LiveTime        int64 `json:"live_time"`    // 开播时间,-1为未开播
+	RoomShield      int   `json:"room_shield"`
+	IsSp            int   `json:"is_sp"`
+	SpecialType     int   `json:"special_type"`
+	AllSpecialTypes []int `json:"all_special_types"`
 }
