@@ -522,3 +522,17 @@ func TestCommClient_LiveGetAreaInfo(t *testing.T) {
 		}
 	}
 }
+func TestCommClient_LiveGetGuardList(t *testing.T) {
+	r, err := testCommClient.LiveGetGuardList(545068, 8739477, 3, 10)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("total: %d,nowPage: %d,totalPage: %d", r.Info.Num, r.Info.Now, r.Info.Page)
+	for _, l := range r.Top3 {
+		t.Logf("uid: %d,uname: %s,rank: %d,level: %d", l.UID, l.Username, l.Rank, l.GuardLevel)
+	}
+	for _, l := range r.List {
+		t.Logf("\tuid: %d,uname: %s,rank: %d,level: %d", l.UID, l.Username, l.Rank, l.GuardLevel)
+	}
+}

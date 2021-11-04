@@ -1509,3 +1509,31 @@ type LiveAreaInfo struct {
 		CateID          string `json:"cate_id,omitempty"`
 	} `json:"list"`
 }
+type LiveGuardList struct {
+	Info *struct {
+		Num              int `json:"num"`  // 大航海总数
+		Page             int `json:"page"` // 总页数
+		Now              int `json:"now"`  // 该次请求的页数
+		AchievementLevel int `json:"achievement_level"`
+	} `json:"info"`
+	List []*struct {
+		UID           int64  `json:"uid"`
+		RUID          int64  `json:"ruid"` // 主播mid
+		Rank          int    `json:"rank"` // 在该数组中的排名
+		Username      string `json:"username"`
+		Face          string `json:"face"`
+		IsAlive       int    `json:"is_alive"`
+		GuardLevel    int    `json:"guard_level"` // 1:总督 2:提督 3:舰长
+		GuardSubLevel int    `json:"guard_sub_level"`
+	} `json:"list"`
+	Top3 []*struct {
+		UID           int    `json:"uid"`
+		RUID          int    `json:"ruid"` // 主播mid
+		Rank          int    `json:"rank"` // 在该数组中的排名
+		Username      string `json:"username"`
+		Face          string `json:"face"`
+		IsAlive       int    `json:"is_alive"`
+		GuardLevel    int    `json:"guard_level"` // 1:总督 2:提督 3:舰长
+		GuardSubLevel int    `json:"guard_sub_level"`
+	} `json:"top3"`
+}

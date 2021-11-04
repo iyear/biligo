@@ -1162,3 +1162,32 @@ func (c *CommClient) LiveGetAreaInfo() ([]*LiveAreaInfo, error) {
 	}
 	return r, nil
 }
+
+// LiveGetGuardList 获取直播间大航海列表
+//
+// mid: 主播mid
+//
+// pn: 页码
+//
+// ps: 每页项数
+func (c *CommClient) LiveGetGuardList(roomID int64, mid int64, pn int, ps int) (*LiveGuardList, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/app-room/v1/guardTab/topList",
+		"GET",
+		map[string]string{
+			"roomid":    strconv.FormatInt(roomID, 10),
+			"ruid":      strconv.FormatInt(mid, 10),
+			"page":      strconv.Itoa(pn),
+			"page_size": strconv.Itoa(ps),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LiveGuardList{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
