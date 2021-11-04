@@ -1142,3 +1142,23 @@ func (c *CommClient) LiveGetWsConf(roomID int64) (*LiveWsConf, error) {
 	}
 	return r, nil
 }
+
+// LiveGetAreaInfo
+//
+// 获取直播分区信息
+func (c *CommClient) LiveGetAreaInfo() ([]*LiveAreaInfo, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"room/v1/Area/getList",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r []*LiveAreaInfo
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

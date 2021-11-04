@@ -509,3 +509,16 @@ func TestCommClient_LiveGetWsConf(t *testing.T) {
 		t.Logf("\thost: %s,port: %d", s.Host, s.Port)
 	}
 }
+func TestCommClient_LiveGetAreaInfo(t *testing.T) {
+	r, err := testCommClient.LiveGetAreaInfo()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, info := range r {
+		t.Logf("id: %d,name: %s", info.ID, info.Name)
+		for _, l := range info.List {
+			t.Logf("\tid: %s,name: %s,hot: %d,comlex: %s", l.ID, l.Name, l.HotStatus, l.ComplexAreaName)
+		}
+	}
+}

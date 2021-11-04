@@ -1490,3 +1490,22 @@ type LiveWsConf struct {
 	} `json:"server_list"`
 	Token string `json:"token"`
 }
+type LiveAreaInfo struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+	List []*struct {
+		ID              string `json:"id"`
+		ParentID        string `json:"parent_id"`
+		OldAreaID       string `json:"old_area_id"`
+		Name            string `json:"name"`
+		ActID           string `json:"act_id"`
+		PkStatus        string `json:"pk_status"`
+		HotStatus       int    `json:"hot_status"`
+		LockStatus      string `json:"lock_status"`
+		Pic             string `json:"pic"`
+		ComplexAreaName string `json:"complex_area_name"`
+		ParentName      string `json:"parent_name"`
+		AreaType        int    `json:"area_type"`
+		CateID          string `json:"cate_id,omitempty"`
+	} `json:"list"`
+}
