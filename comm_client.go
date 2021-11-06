@@ -1165,6 +1165,8 @@ func (c *CommClient) LiveGetAreaInfo() ([]*LiveAreaInfo, error) {
 
 // LiveGetGuardList 获取直播间大航海列表
 //
+// roomID: 真实直播间ID
+//
 // mid: 主播mid
 //
 // pn: 页码
@@ -1193,6 +1195,8 @@ func (c *CommClient) LiveGetGuardList(roomID int64, mid int64, pn int, ps int) (
 }
 
 // LiveGetMedalRank 获取直播间粉丝勋章榜
+//
+// roomID: 真实直播间ID
 //
 // mid: 主播mid
 func (c *CommClient) LiveGetMedalRank(roomID int64, mid int64) (*LiveMedalRank, error) {
