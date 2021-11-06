@@ -1559,3 +1559,19 @@ type LiveMedalRank struct {
 		IsLighted        int    `json:"is_lighted"`
 	} `json:"list"`
 }
+type LivePlayURL struct {
+	CurrentQn          int `json:"current_qn"`
+	QualityDescription []*struct {
+		Qn   int    `json:"qn"`
+		Desc string `json:"desc"`
+	} `json:"quality_description"` // 清晰度列表
+	DURL []*struct {
+		URL        string `json:"url"`
+		Length     int    `json:"length"`
+		Order      int    `json:"order"`
+		StreamType int    `json:"stream_type"`
+		PTag       int    `json:"ptag"`
+		P2PType    int    `json:"p2p_type"`
+	} `json:"durl"`
+	IsDashAuto bool `json:"is_dash_auto"`
+}

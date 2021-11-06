@@ -546,3 +546,17 @@ func TestCommClient_LiveGetMedalRank(t *testing.T) {
 		t.Logf("rank: %d,uname: %s,medal: %s,guard: %d,level: %d", l.Rank, l.Uname, l.MedalName, l.GuardLevel, l.Level)
 	}
 }
+func TestCommClient_LiveGetPlayURL(t *testing.T) {
+	r, err := testCommClient.LiveGetPlayURL(923833, 10000)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("cur: %d", r.CurrentQn)
+	for _, q := range r.QualityDescription {
+		t.Logf("qn: %d,desc: %s", q.Qn, q.Desc)
+	}
+	for _, u := range r.DURL {
+		t.Logf("order: %d,url: %s", u.Order, u.URL)
+	}
+}

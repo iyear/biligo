@@ -1218,3 +1218,29 @@ func (c *CommClient) LiveGetMedalRank(roomID int64, mid int64) (*LiveMedalRank, 
 	}
 	return r, nil
 }
+
+// LiveGetPlayURL 获取直播流信息
+//
+// qn: 原画:10000 蓝光:400 超清:250 高清:150 流畅:80
+func (c *CommClient) LiveGetPlayURL(roomID int64, qn int) (*LivePlayURL, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/web-room/v1/playUrl/playUrl",
+		"GET",
+		map[string]string{
+			"cid":           strconv.FormatInt(roomID, 10),
+			"qn":            strconv.Itoa(qn),
+			"platform":      "web",
+			"https_url_req": "1",
+			"ptype":         "16",
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LivePlayURL{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
