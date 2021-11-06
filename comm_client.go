@@ -1191,3 +1191,26 @@ func (c *CommClient) LiveGetGuardList(roomID int64, mid int64, pn int, ps int) (
 	}
 	return r, nil
 }
+
+// LiveGetMedalRank 获取直播间粉丝勋章榜
+//
+// mid: 主播mid
+func (c *CommClient) LiveGetMedalRank(roomID int64, mid int64) (*LiveMedalRank, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"rankdb/v1/RoomRank/webMedalRank",
+		"GET",
+		map[string]string{
+			"roomid": strconv.FormatInt(roomID, 10),
+			"ruid":   strconv.FormatInt(mid, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LiveMedalRank{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

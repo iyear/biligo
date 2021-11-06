@@ -1537,3 +1537,25 @@ type LiveGuardList struct {
 		GuardSubLevel int    `json:"guard_sub_level"`
 	} `json:"top3"`
 }
+type LiveMedalRank struct {
+	Medal struct {
+		Status int `json:"status"`
+	} `json:"medal"`
+	List []*struct {
+		UID              int64  `json:"uid"`        // mid
+		Uname            string `json:"uname"`      // 昵称
+		Face             string `json:"face"`       // 头像url
+		Rank             int    `json:"rank"`       // 排名
+		MedalName        string `json:"medal_name"` // 勋章名字
+		Level            int    `json:"level"`      // 勋章等级
+		Color            int64  `json:"color"`      // 勋章颜色
+		TargetID         int64  `json:"target_id"`  // 主播mid
+		Special          string `json:"special"`
+		IsSelf           int    `json:"isSelf"`
+		GuardLevel       int    `json:"guard_level"` // 1:总督 2:提督 3:舰长
+		MedalColorStart  int64  `json:"medal_color_start"`
+		MedalColorEnd    int64  `json:"medal_color_end"`
+		MedalColorBorder int64  `json:"medal_color_border"`
+		IsLighted        int    `json:"is_lighted"`
+	} `json:"list"`
+}

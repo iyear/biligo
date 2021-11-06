@@ -536,3 +536,13 @@ func TestCommClient_LiveGetGuardList(t *testing.T) {
 		t.Logf("\tuid: %d,uname: %s,rank: %d,level: %d", l.UID, l.Username, l.Rank, l.GuardLevel)
 	}
 }
+func TestCommClient_LiveGetMedalRank(t *testing.T) {
+	r, err := testCommClient.LiveGetMedalRank(545068, 8739477)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, l := range r.List {
+		t.Logf("rank: %d,uname: %s,medal: %s,guard: %d,level: %d", l.Rank, l.Uname, l.MedalName, l.GuardLevel, l.Level)
+	}
+}
