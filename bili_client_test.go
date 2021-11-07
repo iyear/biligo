@@ -935,3 +935,10 @@ func TestBiliClient_DynaGetDrafts(t *testing.T) {
 		t.Logf("dfid: %d,status: %d,publish: %d", df.DraftID, df.PublishStatus, df.PublishTime)
 	}
 }
+func TestBiliClient_LiveSendDanmaku(t *testing.T) {
+	err := testBiliClient.LiveSendDanmaku(23713127, 16777215, 25, 1, "bilibili[]~(￣▽￣)~", 0)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}

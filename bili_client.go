@@ -2533,3 +2533,34 @@ func (b *BiliClient) DynaGetDrafts() (*DynaGetDraft, error) {
 	}
 	return r, nil
 }
+
+// LiveSendDanmaku 发送弹幕
+//
+// roomID: 真实直播间ID
+//
+// color: 颜色十进制，有权限控制.默认白色:16777215
+//
+// fontsize: 默认25
+//
+// mode: 1:飞行 5:顶部 4:底部
+//
+// msg: 弹幕内容
+//
+// bubble: 气泡弹幕?默认0
+func (b *BiliClient) LiveSendDanmaku(roomID int64, color int64, fontsize int, mode int, msg string, bubble int) error {
+	_, err := b.RawParse(
+		BiliLiveURL,
+		"msg/send",
+		"POST",
+		map[string]string{
+			"roomid":   strconv.FormatInt(roomID, 10),
+			"color":    strconv.FormatInt(color, 10),
+			"fontsize": strconv.Itoa(fontsize),
+			"mode":     strconv.Itoa(mode),
+			"msg":      msg,
+			"bubble":   strconv.Itoa(bubble),
+			"rnd":      strconv.FormatInt(time.Now().Unix(), 10),
+		},
+	)
+	return err
+}
