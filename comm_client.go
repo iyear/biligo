@@ -1244,3 +1244,33 @@ func (c *CommClient) LiveGetPlayURL(roomID int64, qn int) (*LivePlayURL, error) 
 	}
 	return r, nil
 }
+
+// LiveGetAllGiftInfo 获取所有礼物信息
+//
+// areaID: 子分区ID 从 LiveGetAreaInfo 获取
+//
+// areaParentID: 父分区ID 从 LiveGetAreaInfo 获取
+//
+// 三个字段可以不用填，但填了有助于减小返回内容的大小，置空(传入0)返回约 2.7w 行，填了三个对应值返回约 1.4w 行
+func (c *CommClient) LiveGetAllGiftInfo(roomID int64, areaID int, areaParentID int) (*LiveAllGiftInfo, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/web-room/v1/giftPanel/giftConfig",
+		"GET",
+		map[string]string{
+			"room_id":        strconv.FormatInt(roomID, 10),
+			"platform":       "pc",
+			"source":         "live",
+			"area_id":        strconv.Itoa(areaID),
+			"area_parent_id": strconv.Itoa(areaParentID),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &LiveAllGiftInfo{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

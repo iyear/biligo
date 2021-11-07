@@ -560,3 +560,29 @@ func TestCommClient_LiveGetPlayURL(t *testing.T) {
 		t.Logf("order: %d,url: %s", u.Order, u.URL)
 	}
 }
+func TestCommClient_LiveGetAllGiftInfo(t *testing.T) {
+	r, err := testCommClient.LiveGetAllGiftInfo(545068, 86, 2)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, l := range r.List {
+		t.Logf("id: %d,name: %s,price: %d", l.ID, l.Name, l.Price)
+	}
+	for _, l := range r.GuardResources {
+		t.Logf("name: %s,level: %d", l.Name, l.Level)
+	}
+}
+func TestCommClient_LiveGetAllGiftInfo2(t *testing.T) {
+	r, err := testCommClient.LiveGetAllGiftInfo(0, 0, 0)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, l := range r.List {
+		t.Logf("id: %d,name: %s,price: %d", l.ID, l.Name, l.Price)
+	}
+	for _, l := range r.GuardResources {
+		t.Logf("name: %s,level: %d", l.Name, l.Level)
+	}
+}
