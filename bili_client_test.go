@@ -942,3 +942,13 @@ func TestBiliClient_LiveSendDanmaku(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_CommentSend(t *testing.T) {
+	r, err := testBiliClient.CommentSend(676583423, 1, "bil[OK]ibi[OK]litest22[OK]", 1, 0, 0)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("toast: %s,rpid: %d", r.SuccessToast, r.RPID)
+	rp := r.Reply
+	t.Logf("msg: %s,emote: %v,time: %d,rpid: %d", rp.Content.Message, rp.Content.Emote, rp.Ctime, rp.RPID)
+}

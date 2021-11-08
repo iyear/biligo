@@ -1657,3 +1657,170 @@ type LiveAllGiftInfo struct {
 		Name  string `json:"name"`
 	} `json:"guard_resources"`
 }
+type Comment struct {
+	RPID      int64         `json:"rpid"`
+	OID       int64         `json:"oid"`
+	Type      int           `json:"type"`
+	MID       int64         `json:"mid"`
+	Root      int           `json:"root"`
+	Parent    int           `json:"parent"`
+	Dialog    int           `json:"dialog"`
+	Count     int           `json:"count"`
+	Rcount    int           `json:"rcount"`
+	State     int           `json:"state"`
+	FansGrade int           `json:"fansgrade"`
+	Attr      int           `json:"attr"`
+	Ctime     int64         `json:"ctime"`
+	RpidStr   string        `json:"rpid_str"`
+	RootStr   string        `json:"root_str"`
+	ParentStr string        `json:"parent_str"`
+	Like      int           `json:"like"`
+	Action    int           `json:"action"`
+	Member    CommentMember `json:"member"`
+	Content   struct {
+		Message string           `json:"message"`
+		Plat    int              `json:"plat"`
+		Device  string           `json:"device"`
+		Members []*CommentMember `json:"members"`
+		Emote   map[string]struct {
+			ID        int64  `json:"id"`
+			PackageID int64  `json:"package_id"`
+			Status    int    `json:"status"`
+			Type      int    `json:"type"`
+			Attr      int    `json:"attr"`
+			Text      string `json:"text"`
+			URL       string `json:"url"`
+			Meta      struct {
+				Size int `json:"size"`
+			} `json:"meta"`
+			Mtime int64 `json:"mtime"`
+		}
+		JumpURL struct {
+		} `json:"jump_url"`
+		MaxLine int `json:"max_line"`
+	} `json:"content"`
+	Replies []*Comment `json:"replies"`
+	Assist  int        `json:"assist"`
+	Folder  struct {
+		HasFolded bool   `json:"has_folded"`
+		IsFolded  bool   `json:"is_folded"`
+		Rule      string `json:"rule"`
+	} `json:"folder"`
+	UpAction struct {
+		Like  bool `json:"like"`
+		Reply bool `json:"reply"`
+	} `json:"up_action"`
+	ShowFollow   bool `json:"show_follow"`
+	Invisible    bool `json:"invisible"`
+	ReplyControl struct {
+	} `json:"reply_control"`
+}
+type CommentMember struct {
+	MID         string `json:"mid"`
+	Uname       string `json:"uname"`
+	Sex         string `json:"sex"`
+	Sign        string `json:"sign"`
+	Avatar      string `json:"avatar"`
+	Rank        string `json:"rank"`
+	DisplayRank string `json:"DisplayRank"`
+	LevelInfo   struct {
+		CurrentLevel int `json:"current_level"`
+		CurrentMin   int `json:"current_min"`
+		CurrentExp   int `json:"current_exp"`
+		NextExp      int `json:"next_exp"`
+	} `json:"level_info"`
+	Pendant struct {
+		PID               int64  `json:"pid"`
+		Name              string `json:"name"`
+		Image             string `json:"image"`
+		Expire            int    `json:"expire"`
+		ImageEnhance      string `json:"image_enhance"`
+		ImageEnhanceFrame string `json:"image_enhance_frame"`
+	} `json:"pendant"`
+	Nameplate struct {
+		NID        int    `json:"nid"`
+		Name       string `json:"name"`
+		Image      string `json:"image"`
+		ImageSmall string `json:"image_small"`
+		Level      string `json:"level"`
+		Condition  string `json:"condition"`
+	} `json:"nameplate"`
+	OfficialVerify struct {
+		Type int    `json:"type"`
+		Desc string `json:"desc"`
+	} `json:"official_verify"`
+	Vip struct {
+		VipType       int    `json:"vipType"`
+		VipDueDate    int64  `json:"vipDueDate"`
+		DueRemark     string `json:"dueRemark"`
+		AccessStatus  int    `json:"accessStatus"`
+		VipStatus     int    `json:"vipStatus"`
+		VipStatusWarn string `json:"vipStatusWarn"`
+		ThemeType     int    `json:"themeType"`
+		Label         struct {
+			Path        string `json:"path"`
+			Text        string `json:"text"`
+			LabelTheme  string `json:"label_theme"`
+			TextColor   string `json:"text_color"`
+			BgStyle     int    `json:"bg_style"`
+			BgColor     string `json:"bg_color"`
+			BorderColor string `json:"border_color"`
+		} `json:"label"`
+		AvatarSubscript int    `json:"avatar_subscript"`
+		NicknameColor   string `json:"nickname_color"`
+	} `json:"vip"`
+	FansDetail struct {
+		UID          int64  `json:"uid"`
+		MedalID      int64  `json:"medal_id"`
+		MedalName    string `json:"medal_name"`
+		Score        int    `json:"score"`
+		Level        int    `json:"level"`
+		Intimacy     int    `json:"intimacy"`
+		MasterStatus int    `json:"master_status"`
+		IsReceive    int    `json:"is_receive"`
+	} `json:"fans_detail"`
+	Following   int `json:"following"`
+	IsFollowed  int `json:"is_followed"`
+	UserSailing struct {
+		Pendant struct {
+			ID      int64  `json:"id"`
+			Name    string `json:"name"`
+			Image   string `json:"image"`
+			JumpURL string `json:"jump_url"`
+			Type    string `json:"type"`
+		} `json:"pendant"`
+		Cardbg struct {
+			ID      int64  `json:"id"`
+			Name    string `json:"name"`
+			Image   string `json:"image"`
+			JumpURL string `json:"jump_url"`
+			Fan     struct {
+				IsFan   int    `json:"is_fan"`
+				Number  int64  `json:"number"`
+				Color   string `json:"color"`
+				Name    string `json:"name"`
+				NumDesc string `json:"num_desc"`
+			}
+		} `json:"cardbg"`
+		CardbgWithFocus interface{} `json:"cardbg_with_focus"`
+	} `json:"user_sailing"`
+	IsContractor bool   `json:"is_contractor"`
+	ContractDesc string `json:"contract_desc"`
+}
+type CommentSend struct {
+	SuccessAction int      `json:"success_action"`
+	SuccessToast  string   `json:"success_toast"`
+	NeedCaptcha   bool     `json:"need_captcha"`
+	NeedCaptchaV2 bool     `json:"need_captcha_v2"`
+	URL           string   `json:"url"`
+	URLV2         string   `json:"url_v2"`
+	RPID          int64    `json:"rpid"`
+	RpidStr       string   `json:"rpid_str"`
+	Dialog        int      `json:"dialog"`
+	DialogStr     string   `json:"dialog_str"`
+	Root          int      `json:"root"`
+	RootStr       string   `json:"root_str"`
+	Parent        int      `json:"parent"`
+	ParentStr     string   `json:"parent_str"`
+	Reply         *Comment `json:"reply"`
+}

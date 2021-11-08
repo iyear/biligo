@@ -1450,6 +1450,44 @@ func (b *BiliClient) VideoHateTag(aid int64, tagID int64) error {
 	return err
 }
 
+// CommentSend 发送评论
+//
+// oid: 对应类型的ID
+//
+// tp: 类型。https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
+//
+// content: 评论内容，最大1000字符 表情使用表情转义符
+//
+// platform: 平台标识 1：web端 2：安卓客户端 3：ios客户端 4：wp客户端
+//
+// root: 二级评论以上使用 没有填0
+//
+// parent: 二级评论同根评论id 大于二级评论为要回复的评论id
+func (b *BiliClient) CommentSend(oid int64, tp int, content string, platform int, root int64, parent int64) (*CommentSend, error) {
+	resp, err := b.RawParse(
+		BiliApiURL,
+		"x/v2/reply/add",
+		"POST",
+		map[string]string{
+			"oid":      strconv.FormatInt(oid, 10),
+			"type":     strconv.Itoa(tp),
+			"root":     strconv.FormatInt(root, 10),
+			"parent":   strconv.FormatInt(parent, 10),
+			"ordering": "heat", // 暂时不知道作用
+			"message":  content,
+			"plat":     strconv.Itoa(platform),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &CommentSend{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
 // DanmakuGetHistoryIndex
 //
 // 获取历史弹幕日期，返回的日期代表有历史弹幕，用于请求历史弹幕
