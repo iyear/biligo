@@ -1658,30 +1658,71 @@ type LiveAllGiftInfo struct {
 	} `json:"guard_resources"`
 }
 type Comment struct {
-	RPID      int64         `json:"rpid"`
-	OID       int64         `json:"oid"`
-	Type      int           `json:"type"`
-	MID       int64         `json:"mid"`
-	Root      int           `json:"root"`
-	Parent    int           `json:"parent"`
-	Dialog    int           `json:"dialog"`
-	Count     int           `json:"count"`
-	Rcount    int           `json:"rcount"`
-	State     int           `json:"state"`
-	FansGrade int           `json:"fansgrade"`
-	Attr      int           `json:"attr"`
-	Ctime     int64         `json:"ctime"`
-	RpidStr   string        `json:"rpid_str"`
-	RootStr   string        `json:"root_str"`
-	ParentStr string        `json:"parent_str"`
-	Like      int           `json:"like"`
-	Action    int           `json:"action"`
-	Member    CommentMember `json:"member"`
-	Content   struct {
-		Message string           `json:"message"`
+	RPID int64 `json:"rpid"` // 评论rpid
+	OID  int64 `json:"oid"`  // 评论区对象id
+	// 评论区类型代码
+	//
+	// https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
+	Type int   `json:"type"`
+	MID  int64 `json:"mid"` // 发送者mid
+	// 根评论rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 大于一级评论则为根评论id
+	Root int64 `json:"root"`
+	// 回复父评论rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 若为二级评论则为根评论id
+	//
+	// 大于二级评论为上一级评论id
+	Parent int64 `json:"parent"`
+	// 回复对方rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 若为二级评论则为该评论id
+	//
+	// 大于二级评论为上一级评论id
+	Dialog    int64  `json:"dialog"`
+	Count     int    `json:"count"`           // 二级评论条数
+	Rcount    int    `json:"rcount"`          // 回复评论条数
+	Floor     int    `json:"floor,omitempty"` // 评论楼层号 若不支持楼层则无此项
+	State     int    `json:"state"`           // 0 作用尚不明确
+	FansGrade int    `json:"fansgrade"`       // 是否具有粉丝标签	0：无 1：有
+	Attr      int    `json:"attr"`            // 属性位
+	Ctime     int64  `json:"ctime"`           // 评论发送时间 时间戳
+	RpidStr   string `json:"rpid_str"`        // 评论rpid	字串格式
+	RootStr   string `json:"root_str"`        // 根评论rpid 字串格式
+	ParentStr string `json:"parent_str"`      // 回复父评论rpid 字串格式
+	Like      int    `json:"like"`            // 评论获赞数
+	// 当前用户操作状态	需要登录(Cookie或APP)
+	//
+	// 否则恒为0
+	//
+	// 0：无
+	//
+	// 1：已点赞
+	//
+	// 2：已点踩
+	Action  int           `json:"action"`
+	Member  CommentMember `json:"member"` // 评论发送者信息
+	Content struct {
+		Message string `json:"message"` // 评论内容
+		// 评论发送端
+		//
+		// 1：web端
+		//
+		// 2：安卓客户端
+		//
+		// 3：ios客户端
+		//
+		// 4：wp客户端
 		Plat    int              `json:"plat"`
-		Device  string           `json:"device"`
-		Members []*CommentMember `json:"members"`
+		Device  string           `json:"device"`  // 评论发送平台设备
+		Members []*CommentMember `json:"members"` // at到的用户信息
 		Emote   map[string]struct {
 			ID        int64  `json:"id"`
 			PackageID int64  `json:"package_id"`
@@ -1691,95 +1732,136 @@ type Comment struct {
 			Text      string `json:"text"`
 			URL       string `json:"url"`
 			Meta      struct {
-				Size int `json:"size"`
+				Size  int    `json:"size"`
+				Alias string `json:"alias"`
 			} `json:"meta"`
 			Mtime int64 `json:"mtime"`
-		}
-		JumpURL struct {
-		} `json:"jump_url"`
-		MaxLine int `json:"max_line"`
-	} `json:"content"`
-	Replies []*Comment `json:"replies"`
+		} `json:"emote"` // 需要渲染的表情转义	评论内容无表情则无此项
+		JumpURL map[string]struct {
+			Title          string `json:"title"` // 标题
+			State          int    `json:"state"`
+			PrefixIcon     string `json:"prefixIcon"` // 图标url
+			AppURLSchema   string `json:"appUrlSchema"`
+			AppName        string `json:"appName"`
+			AppPackageName string `json:"appPackageName"`
+			ClickReport    string `json:"clickReport"`
+		} `json:"jump_url"` // 需要高亮的超链转义
+		MaxLine int `json:"max_line"` // 6	收起最大行数
+	} `json:"content"` // 评论信息
+	Replies []*Comment `json:"replies"` // 评论回复条目预览 仅嵌套一层 否则为null
 	Assist  int        `json:"assist"`
 	Folder  struct {
-		HasFolded bool   `json:"has_folded"`
-		IsFolded  bool   `json:"is_folded"`
-		Rule      string `json:"rule"`
-	} `json:"folder"`
+		HasFolded bool   `json:"has_folded"` // 是否有被折叠的二级评论
+		IsFolded  bool   `json:"is_folded"`  // 评论是否被折叠
+		Rule      string `json:"rule"`       // 相关规则页面url
+	} `json:"folder"` // 折叠信息
 	UpAction struct {
-		Like  bool `json:"like"`
-		Reply bool `json:"reply"`
-	} `json:"up_action"`
+		Like  bool `json:"like"`  // 是否UP主觉得很赞
+		Reply bool `json:"reply"` // 是否被UP主回复
+	} `json:"up_action"` // 评论UP主操作信息
 	ShowFollow   bool `json:"show_follow"`
 	Invisible    bool `json:"invisible"`
 	ReplyControl struct {
-	} `json:"reply_control"`
+	} `json:"reply_control"` // 未知
 }
 type CommentMember struct {
-	MID         string `json:"mid"`
-	Uname       string `json:"uname"`
-	Sex         string `json:"sex"`
-	Sign        string `json:"sign"`
-	Avatar      string `json:"avatar"`
-	Rank        string `json:"rank"`
+	MID         string `json:"mid"`    // 发送者mid
+	Uname       string `json:"uname"`  // 发送者昵称
+	Sex         string `json:"sex"`    // 发送者性别	男 女 保密
+	Sign        string `json:"sign"`   // 发送者签名
+	Avatar      string `json:"avatar"` // 发送者头像
+	Rank        string `json:"rank"`   // 10000
 	DisplayRank string `json:"DisplayRank"`
 	LevelInfo   struct {
-		CurrentLevel int `json:"current_level"`
-		CurrentMin   int `json:"current_min"`
-		CurrentExp   int `json:"current_exp"`
-		NextExp      int `json:"next_exp"`
-	} `json:"level_info"`
+		CurrentLevel int `json:"current_level"` // 用户等级
+		CurrentMin   int `json:"current_min"`   // 0
+		CurrentExp   int `json:"current_exp"`   // 0
+		NextExp      int `json:"next_exp"`      // 0
+	} `json:"level_info"` // 发送者等级
 	Pendant struct {
-		PID               int64  `json:"pid"`
-		Name              string `json:"name"`
-		Image             string `json:"image"`
-		Expire            int    `json:"expire"`
-		ImageEnhance      string `json:"image_enhance"`
+		PID               int64  `json:"pid"`           // 头像框id
+		Name              string `json:"name"`          // 头像框名称
+		Image             string `json:"image"`         // 头像框图片url
+		Expire            int    `json:"expire"`        // 0
+		ImageEnhance      string `json:"image_enhance"` // 头像框图片url
 		ImageEnhanceFrame string `json:"image_enhance_frame"`
-	} `json:"pendant"`
+	} `json:"pendant"` // 发送者头像框信息
 	Nameplate struct {
-		NID        int    `json:"nid"`
-		Name       string `json:"name"`
-		Image      string `json:"image"`
-		ImageSmall string `json:"image_small"`
-		Level      string `json:"level"`
-		Condition  string `json:"condition"`
-	} `json:"nameplate"`
+		NID        int    `json:"nid"`         // 勋章id
+		Name       string `json:"name"`        // 勋章名称
+		Image      string `json:"image"`       // 挂件图片url
+		ImageSmall string `json:"image_small"` // 勋章图片url 小
+		Level      string `json:"level"`       // 勋章等级
+		Condition  string `json:"condition"`   // 勋章条件
+	} `json:"nameplate"` // 发送者勋章信息
 	OfficialVerify struct {
+		// 是否认证
+		//
+		// -1：无
+		//
+		// 0：个人认证
+		//
+		// 1：机构认证
 		Type int    `json:"type"`
-		Desc string `json:"desc"`
-	} `json:"official_verify"`
+		Desc string `json:"desc"` // 认证信息
+	} `json:"official_verify"` // 发送者认证信息
 	Vip struct {
+		// 大会员类型
+		//
+		// 0：无
+		//
+		// 1：月会员
+		//
+		// 2：年以上会员
 		VipType       int    `json:"vipType"`
-		VipDueDate    int64  `json:"vipDueDate"`
+		VipDueDate    int64  `json:"vipDueDate"` // 大会员到期时间	毫秒 时间戳
 		DueRemark     string `json:"dueRemark"`
 		AccessStatus  int    `json:"accessStatus"`
-		VipStatus     int    `json:"vipStatus"`
+		VipStatus     int    `json:"vipStatus"` // 大会员状态	0：无 1：有
 		VipStatusWarn string `json:"vipStatusWarn"`
-		ThemeType     int    `json:"themeType"`
+		ThemeType     int    `json:"themeType"` // 会员样式id
 		Label         struct {
-			Path        string `json:"path"`
-			Text        string `json:"text"`
+			Path string `json:"path"`
+			Text string `json:"text"` // 会员类型文案
+			// 会员类型
+			//
+			// vip：大会员
+			//
+			// annual_vip：年度大会员
+			//
+			// ten_annual_vip：十年大会员
+			//
+			// hundred_annual_vip：百年大会员
 			LabelTheme  string `json:"label_theme"`
 			TextColor   string `json:"text_color"`
 			BgStyle     int    `json:"bg_style"`
 			BgColor     string `json:"bg_color"`
 			BorderColor string `json:"border_color"`
-		} `json:"label"`
+		} `json:"label"` // 会员铭牌样式
 		AvatarSubscript int    `json:"avatar_subscript"`
 		NicknameColor   string `json:"nickname_color"`
-	} `json:"vip"`
+	} `json:"vip"` // 发送者会员信息
 	FansDetail struct {
-		UID          int64  `json:"uid"`
-		MedalID      int64  `json:"medal_id"`
-		MedalName    string `json:"medal_name"`
-		Score        int    `json:"score"`
-		Level        int    `json:"level"`
-		Intimacy     int    `json:"intimacy"`
-		MasterStatus int    `json:"master_status"`
-		IsReceive    int    `json:"is_receive"`
-	} `json:"fans_detail"`
-	Following   int `json:"following"`
+		UID          int64  `json:"uid"`           // 用户mid
+		MedalID      int64  `json:"medal_id"`      // 粉丝标签id
+		MedalName    string `json:"medal_name"`    // 粉丝标签名
+		Score        int    `json:"score"`         // 0
+		Level        int    `json:"level"`         // 当前标签等级
+		Intimacy     int    `json:"intimacy"`      // 0
+		MasterStatus int    `json:"master_status"` // 1
+		IsReceive    int    `json:"is_receive"`    // 1
+	} `json:"fans_detail"` // 发送者粉丝标签
+	// 是否关注该用户	需要登录(Cookie或APP) 否则恒为0
+	//
+	// 0：未关注
+	//
+	// 1：已关注
+	Following int `json:"following"`
+	// 是否被该用户关注	需要登录(Cookie或APP) 否则恒为0
+	//
+	// 0：未关注
+	//
+	// 1：已关注
 	IsFollowed  int `json:"is_followed"`
 	UserSailing struct {
 		Pendant struct {
@@ -1788,39 +1870,64 @@ type CommentMember struct {
 			Image   string `json:"image"`
 			JumpURL string `json:"jump_url"`
 			Type    string `json:"type"`
-		} `json:"pendant"`
+		} `json:"pendant"` // 头像框信息
 		Cardbg struct {
-			ID      int64  `json:"id"`
-			Name    string `json:"name"`
-			Image   string `json:"image"`
-			JumpURL string `json:"jump_url"`
+			ID      int64  `json:"id"`       // 评论条目装扮id
+			Name    string `json:"name"`     // 评论条目装扮名称
+			Image   string `json:"image"`    // 评论条目装扮图片url
+			JumpURL string `json:"jump_url"` // 评论条目装扮商城页面url
 			Fan     struct {
-				IsFan   int    `json:"is_fan"`
-				Number  int64  `json:"number"`
-				Color   string `json:"color"`
-				Name    string `json:"name"`
-				NumDesc string `json:"num_desc"`
-			}
-		} `json:"cardbg"`
-		CardbgWithFocus interface{} `json:"cardbg_with_focus"`
-	} `json:"user_sailing"`
-	IsContractor bool   `json:"is_contractor"`
-	ContractDesc string `json:"contract_desc"`
+				IsFan   int    `json:"is_fan"`   // 是否为粉丝专属装扮	0：否 1：是
+				Number  int64  `json:"number"`   // 粉丝专属编号
+				Color   string `json:"color"`    // 数字颜色	颜色码
+				Name    string `json:"name"`     // 装扮名称
+				NumDesc string `json:"num_desc"` // 粉丝专属编号	字串格式
+			} `json:"fan"` // 粉丝专属信息
+			// 装扮类型
+			//
+			// suit：一般装扮
+			//
+			// vip_suit：vip装扮
+			Type string `json:"type"`
+		} `json:"cardbg"` // 评论卡片装扮
+		CardbgWithFocus interface{} `json:"cardbg_with_focus"` // 作用尚不明确
+	} `json:"user_sailing"` // 发送者评论条目装扮信息
+	IsContractor bool   `json:"is_contractor"` // 是否为合作用户？
+	ContractDesc string `json:"contract_desc"` // 合作者信息
 }
 type CommentSend struct {
-	SuccessAction int      `json:"success_action"`
-	SuccessToast  string   `json:"success_toast"`
-	NeedCaptcha   bool     `json:"need_captcha"`
-	NeedCaptchaV2 bool     `json:"need_captcha_v2"`
-	URL           string   `json:"url"`
-	URLV2         string   `json:"url_v2"`
-	RPID          int64    `json:"rpid"`
-	RpidStr       string   `json:"rpid_str"`
-	Dialog        int      `json:"dialog"`
-	DialogStr     string   `json:"dialog_str"`
-	Root          int      `json:"root"`
-	RootStr       string   `json:"root_str"`
-	Parent        int      `json:"parent"`
-	ParentStr     string   `json:"parent_str"`
-	Reply         *Comment `json:"reply"`
+	SuccessAction int    `json:"success_action"`  // 0
+	SuccessToast  string `json:"success_toast"`   // 状态文字
+	NeedCaptcha   bool   `json:"need_captcha"`    // 评论需要验证码
+	NeedCaptchaV2 bool   `json:"need_captcha_v2"` // 评论需要验证码v2
+	URL           string `json:"url"`
+	URLV2         string `json:"url_v2"`
+	RPID          int64  `json:"rpid"`     // 评论rpid
+	RpidStr       string `json:"rpid_str"` // 评论rpid4
+	// 回复对方rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 若为二级评论则为该评论id
+	//
+	// 大于二级评论为上一级评论id
+	Dialog    int64  `json:"dialog"`
+	DialogStr string `json:"dialog_str"`
+	// 根评论rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 大于一级评论则为根评论id
+	Root    int64  `json:"root"`
+	RootStr string `json:"root_str"`
+	// 回复父评论rpid
+	//
+	// 若为一级评论则为0
+	//
+	// 若为二级评论则为根评论id
+	//
+	// 大于二级评论为上一级评论id
+	Parent    int64    `json:"parent"`
+	ParentStr string   `json:"parent_str"`
+	Reply     *Comment `json:"reply"`
 }
