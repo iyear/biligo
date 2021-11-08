@@ -952,3 +952,10 @@ func TestBiliClient_CommentSend(t *testing.T) {
 	rp := r.Reply
 	t.Logf("msg: %s,emote: %v,time: %d,rpid: %d", rp.Content.Message, rp.Content.Emote, rp.Ctime, rp.RPID)
 }
+func TestBiliClient_CommentLike(t *testing.T) {
+	err := testBiliClient.CommentLike(634118491, 1, 5730547919, true)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
