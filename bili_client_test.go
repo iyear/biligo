@@ -966,3 +966,10 @@ func TestBiliClient_CommentHate(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_CommentDel(t *testing.T) {
+	err := testBiliClient.CommentDel(634118491, 1, 5730605988)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}

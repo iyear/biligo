@@ -1532,6 +1532,25 @@ func (b *BiliClient) CommentHate(oid int64, tp int, rpid int64, hate bool) error
 	return err
 }
 
+// CommentDel 删除评论 只能删除自己的评论，或自己管理的评论区下的评论
+//
+// oid,tp: 同 CommentSend
+//
+// rpid: 评论ID
+func (b *BiliClient) CommentDel(oid int64, tp int, rpid int64) error {
+	_, err := b.RawParse(
+		BiliApiURL,
+		"x/v2/reply/del",
+		"POST",
+		map[string]string{
+			"oid":  strconv.FormatInt(oid, 10),
+			"type": strconv.Itoa(tp),
+			"rpid": strconv.FormatInt(rpid, 10),
+		},
+	)
+	return err
+}
+
 // DanmakuGetHistoryIndex
 //
 // 获取历史弹幕日期，返回的日期代表有历史弹幕，用于请求历史弹幕
