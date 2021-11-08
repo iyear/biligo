@@ -987,3 +987,17 @@ func TestBiliClient_CommentSetTop2(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_CommentReport(t *testing.T) {
+	err := testBiliClient.CommentReport(634118491, 1, 5730216001, 4, "")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
+func TestBiliClient_CommentReport2(t *testing.T) {
+	err := testBiliClient.CommentReport(634118491, 1, 5730221753, 0, "test")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}

@@ -1573,6 +1573,31 @@ func (b *BiliClient) CommentSetTop(oid int64, tp int, rpid int64, top bool) erro
 	return err
 }
 
+// CommentReport 举报评论
+//
+// oid,tp: 同 BiliClient.CommentSend
+//
+// rpid: 评论ID
+//
+// reason: 参考 https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/comment/action.md#%E4%B8%BE%E6%8A%A5%E8%AF%84%E8%AE%BA
+//
+// content: 其他举报备注 reason=0时有效 不需要时留空
+func (b *BiliClient) CommentReport(oid int64, tp int, rpid int64, reason int, content string) error {
+	_, err := b.RawParse(
+		BiliApiURL,
+		"x/v2/reply/report",
+		"POST",
+		map[string]string{
+			"oid":     strconv.FormatInt(oid, 10),
+			"type":    strconv.Itoa(tp),
+			"rpid":    strconv.FormatInt(rpid, 10),
+			"reason":  strconv.Itoa(reason),
+			"content": content,
+		},
+	)
+	return err
+}
+
 // DanmakuGetHistoryIndex
 //
 // 获取历史弹幕日期，返回的日期代表有历史弹幕，用于请求历史弹幕
