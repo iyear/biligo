@@ -1490,7 +1490,7 @@ func (b *BiliClient) CommentSend(oid int64, tp int, content string, platform int
 
 // CommentLike 点赞评论，点赞成功后会同时消去该评论的点踩
 //
-// oid,tp: 同 CommentSend
+// oid,tp: 同 BiliClient.CommentSend
 //
 // rpid: 评论ID
 //
@@ -1512,7 +1512,7 @@ func (b *BiliClient) CommentLike(oid int64, tp int, rpid int64, like bool) error
 
 // CommentHate 点踩评论，点踩成功后会同时消去该评论的点赞
 //
-// oid,tp: 同 CommentSend
+// oid,tp: 同 BiliClient.CommentSend
 //
 // rpid: 评论ID
 //
@@ -1534,7 +1534,7 @@ func (b *BiliClient) CommentHate(oid int64, tp int, rpid int64, hate bool) error
 
 // CommentDel 删除评论 只能删除自己的评论，或自己管理的评论区下的评论
 //
-// oid,tp: 同 CommentSend
+// oid,tp: 同 BiliClient.CommentSend
 //
 // rpid: 评论ID
 func (b *BiliClient) CommentDel(oid int64, tp int, rpid int64) error {
