@@ -1510,6 +1510,28 @@ func (b *BiliClient) CommentLike(oid int64, tp int, rpid int64, like bool) error
 	return err
 }
 
+// CommentHate 点踩评论，点踩成功后会同时消去该评论的点赞
+//
+// oid,tp: 同 CommentSend
+//
+// rpid: 评论ID
+//
+// like: true为点踩，false为取消点踩
+func (b *BiliClient) CommentHate(oid int64, tp int, rpid int64, hate bool) error {
+	_, err := b.RawParse(
+		BiliApiURL,
+		"x/v2/reply/hate",
+		"POST",
+		map[string]string{
+			"oid":    strconv.FormatInt(oid, 10),
+			"type":   strconv.Itoa(tp),
+			"rpid":   strconv.FormatInt(rpid, 10),
+			"action": util.IF(hate, "1", "0").(string),
+		},
+	)
+	return err
+}
+
 // DanmakuGetHistoryIndex
 //
 // 获取历史弹幕日期，返回的日期代表有历史弹幕，用于请求历史弹幕

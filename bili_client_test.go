@@ -959,3 +959,10 @@ func TestBiliClient_CommentLike(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_CommentHate(t *testing.T) {
+	err := testBiliClient.CommentHate(634118491, 1, 5730547919, true)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
