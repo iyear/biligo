@@ -973,3 +973,17 @@ func TestBiliClient_CommentDel(t *testing.T) {
 		t.FailNow()
 	}
 }
+func TestBiliClient_CommentSetTop(t *testing.T) {
+	err := testBiliClient.CommentSetTop(13914715, 12, 5730810134, true)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}
+func TestBiliClient_CommentSetTop2(t *testing.T) {
+	err := testBiliClient.CommentSetTop(13914715, 12, 5730810134, false)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+}

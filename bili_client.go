@@ -1551,6 +1551,28 @@ func (b *BiliClient) CommentDel(oid int64, tp int, rpid int64) error {
 	return err
 }
 
+// CommentSetTop 置顶评论 只能置顶自己管理的评论区中的一级评论
+//
+// oid,tp: 同 BiliClient.CommentSend
+//
+// rpid: 评论ID
+//
+// top: true为置顶，false为取消置顶
+func (b *BiliClient) CommentSetTop(oid int64, tp int, rpid int64, top bool) error {
+	_, err := b.RawParse(
+		BiliApiURL,
+		"x/v2/reply/top",
+		"POST",
+		map[string]string{
+			"oid":    strconv.FormatInt(oid, 10),
+			"type":   strconv.Itoa(tp),
+			"rpid":   strconv.FormatInt(rpid, 10),
+			"action": util.IF(top, "1", "0").(string),
+		},
+	)
+	return err
+}
+
 // DanmakuGetHistoryIndex
 //
 // 获取历史弹幕日期，返回的日期代表有历史弹幕，用于请求历史弹幕
