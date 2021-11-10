@@ -586,3 +586,11 @@ func TestCommClient_LiveGetAllGiftInfo2(t *testing.T) {
 		t.Logf("name: %s,level: %d", l.Name, l.Level)
 	}
 }
+func TestCommClient_CommentGetCount(t *testing.T) {
+	count, err := testCommClient.CommentGetCount(250531882, 1)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("count: %d", count)
+}

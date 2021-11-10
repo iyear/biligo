@@ -1274,3 +1274,30 @@ func (c *CommClient) LiveGetAllGiftInfo(roomID int64, areaID int, areaParentID i
 	}
 	return r, nil
 }
+
+// CommentGetCount 获取评论总数
+//
+// oid: 对应类型的ID
+//
+// tp: 类型。https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
+func (c *CommClient) CommentGetCount(oid int64, tp int) (int, error) {
+	resp, err := c.RawParse(
+		BiliApiURL,
+		"x/v2/reply/count",
+		"GET",
+		map[string]string{
+			"oid":  strconv.FormatInt(oid, 10),
+			"type": strconv.Itoa(tp),
+		},
+	)
+	if err != nil {
+		return -1, err
+	}
+	var r struct {
+		Count int `json:"count"`
+	}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return -1, err
+	}
+	return r.Count, nil
+}
