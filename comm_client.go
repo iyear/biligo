@@ -1343,3 +1343,38 @@ func (c *CommClient) CommentGetMain(oid int64, tp int, mode int, next int, ps in
 	}
 	return r, nil
 }
+
+// CommentGetReply 获取指定评论和二级回复
+//
+//
+// oid: 对应类型的ID
+//
+// tp: 类型。https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
+//
+// root: 目标一级评论rpid
+//
+// pn: 二级评论页码 从1开始
+//
+// ps: 二级评论每页项数 定义域：1-49
+func (c *CommClient) CommentGetReply(oid int64, tp int, root int64, pn int, ps int) (*CommentReply, error) {
+	resp, err := c.RawParse(
+		BiliApiURL,
+		"x/v2/reply/reply",
+		"GET",
+		map[string]string{
+			"oid":  strconv.FormatInt(oid, 10),
+			"type": strconv.Itoa(tp),
+			"root": strconv.FormatInt(root, 10),
+			"pn":   strconv.Itoa(pn),
+			"ps":   strconv.Itoa(ps),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &CommentReply{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

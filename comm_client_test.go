@@ -626,3 +626,14 @@ func TestCommClient_CommentGetMain2(t *testing.T) {
 		}
 	}
 }
+func TestCommClient_CommentGetReply(t *testing.T) {
+	r, err := testCommClient.CommentGetReply(806545681, 1, 5740696166, 4, 10)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("count: %d,cur: %d", r.Page.Count, r.Page.Num)
+	for _, h := range r.Replies {
+		t.Logf("\tid: %d,uname: %s,likes: %d,content: %s", h.RPID, h.Member.Uname, h.Like, h.Content.Message)
+	}
+}

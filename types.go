@@ -1993,3 +1993,42 @@ type CommentMain struct {
 		ShowText              string `json:"show_text"`
 	} `json:"control"`
 }
+
+type CommentReply struct {
+	Config struct {
+		ShowAdmin  int  `json:"showadmin"`
+		ShowEntry  int  `json:"showentry"`
+		ShowFloor  int  `json:"showfloor"`
+		Showtopic  int  `json:"showtopic"`
+		ShowUpFlag bool `json:"show_up_flag"`
+		ReadOnly   bool `json:"read_only"`
+		ShowDelLog bool `json:"show_del_log"`
+	} `json:"config"`
+	Control struct {
+		InputDisable          bool   `json:"input_disable"`
+		RootInputText         string `json:"root_input_text"`
+		ChildInputText        string `json:"child_input_text"`
+		GiveUpInputText       string `json:"giveup_input_text"`
+		BgText                string `json:"bg_text"`
+		WebSelection          bool   `json:"web_selection"`
+		AnswerGuideText       string `json:"answer_guide_text"`
+		AnswerGuideIconURL    string `json:"answer_guide_icon_url"`
+		AnswerGuideIosURL     string `json:"answer_guide_ios_url"`
+		AnswerGuideAndroidURL string `json:"answer_guide_android_url"`
+		ShowType              int    `json:"show_type"`
+		ShowText              string `json:"show_text"`
+	} `json:"control"`
+	Page struct {
+		Count int `json:"count"`
+		Num   int `json:"num"`
+		Size  int `json:"size"`
+	} `json:"page"`
+	Root     Comment    `json:"root"`
+	Replies  []*Comment `json:"replies"`
+	ShowBvid bool       `json:"show_bvid"`
+	ShowText string     `json:"show_text"`
+	ShowType int        `json:"show_type"`
+	Upper    struct {
+		MID int64 `json:"mid"`
+	} `json:"upper"`
+}
