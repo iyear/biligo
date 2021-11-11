@@ -1301,3 +1301,45 @@ func (c *CommClient) CommentGetCount(oid int64, tp int) (int, error) {
 	}
 	return r.Count, nil
 }
+
+// CommentGetMain 获取评论区内容
+//
+// oid: 对应类型的ID
+//
+// tp: 类型。https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
+//
+// mode: 排序方式
+//
+// 0 3：仅按热度
+//
+// 1：按热度+按时间
+//
+// 2：仅按时间
+//
+// next: 评论页选择 按热度时：热度顺序页码（0为第一页） 按时间时：时间倒序楼层号
+//
+// ps: 每页项数
+//
+// 具体用法请看测试样例
+func (c *CommClient) CommentGetMain(oid int64, tp int, mode int, next int, ps int) (*CommentMain, error) {
+	resp, err := c.RawParse(
+		BiliApiURL,
+		"x/v2/reply/main",
+		"GET",
+		map[string]string{
+			"oid":  strconv.FormatInt(oid, 10),
+			"type": strconv.Itoa(tp),
+			"mode": strconv.Itoa(mode),
+			"next": strconv.Itoa(next),
+			"ps":   strconv.Itoa(ps),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &CommentMain{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

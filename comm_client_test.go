@@ -594,3 +594,35 @@ func TestCommClient_CommentGetCount(t *testing.T) {
 	}
 	t.Logf("count: %d", count)
 }
+func TestCommClient_CommentGetMain(t *testing.T) {
+	r, err := testCommClient.CommentGetMain(806545681, 1, 0, 2, 10)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("mid: %d,total: %d", r.Upper.MID, r.Cursor.AllCount)
+	t.Log("replies:")
+	for _, h := range r.Replies {
+		t.Logf("\tuname: %s,likes: %d,content: %s", h.Member.Uname, h.Like, h.Content.Message)
+		for _, c := range h.Replies {
+			t.Logf("\t\tuname: %s,likes: %d,content: %s", c.Member.Uname, c.Like, c.Content.Message)
+		}
+	}
+}
+func TestCommClient_CommentGetMain2(t *testing.T) {
+	// 按楼层号获取时间排序评论 先传入next=0获取next与prev，再用楼层号来取
+	// r,err:=testCommClient.CommentGetMain(806545681,1,2,0,10)
+	r, err := testCommClient.CommentGetMain(806545681, 1, 2, 14238, 20)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("mid: %d,total: %d,prev: %d,next: %d", r.Upper.MID, r.Cursor.AllCount, r.Cursor.Prev, r.Cursor.Next)
+	t.Log("replies:")
+	for _, h := range r.Replies {
+		t.Logf("\tuname: %s,likes: %d,content: %s", h.Member.Uname, h.Like, h.Content.Message)
+		for _, c := range h.Replies {
+			t.Logf("\t\tuname: %s,likes: %d,content: %s", c.Member.Uname, c.Like, c.Content.Message)
+		}
+	}
+}

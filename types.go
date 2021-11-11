@@ -1931,3 +1931,65 @@ type CommentSend struct {
 	ParentStr string   `json:"parent_str"`
 	Reply     *Comment `json:"reply"`
 }
+type CommentMain struct {
+	Cursor struct {
+		AllCount    int    `json:"all_count"`    // 全部评论条数
+		IsBegin     bool   `json:"is_begin"`     // 是否为第一页
+		Prev        int    `json:"prev"`         // 上页页码
+		Next        int    `json:"next"`         // 下页页码
+		IsEnd       bool   `json:"is_end"`       // 是否为最后页
+		Mode        int    `json:"mode"`         // 排序方式
+		ShowType    int    `json:"show_type"`    // 1
+		SupportMode []int  `json:"support_mode"` // 支持的排序方式
+		Name        string `json:"name"`         // 评论区类型名
+	} `json:"cursor"` // 游标信息
+	Hots   []*Comment // 热评列表
+	Notice struct {
+		Content string `json:"content"` // 公告正文
+		ID      int64  `json:"id"`      // 公告id
+		Link    string `json:"link"`    // 公告页面链接url
+		Title   string `json:"title"`   // 公告标题
+	} `json:"notice"` // 评论区公告信息
+	Replies []*Comment // 评论列表
+	Top     struct {
+		Admin *Comment `json:"admin"`
+		Upper *Comment `json:"upper"`
+		Vote  *Comment `json:"vote"`
+	} `json:"top"` // 置顶评论
+	Folder struct {
+		HasFolded bool   `json:"has_folded"`
+		IsFolded  bool   `json:"is_folded"`
+		Rule      string `json:"rule"`
+	} `json:"folder"` // 评论折叠信息
+	Assist    int `json:"assist"`    // 0
+	Blacklist int `json:"blacklist"` // 0
+	Vote      int `json:"vote"`      // 0
+	Lottery   int `json:"lottery"`   // 0
+	Config    struct {
+		ShowAdmin  int  `json:"showadmin"`
+		ShowEntry  int  `json:"showentry"`
+		ShowFloor  int  `json:"showfloor"`
+		ShowTopic  int  `json:"showtopic"`
+		ShowUpFlag bool `json:"show_up_flag"`
+		ReadOnly   bool `json:"read_only"`
+		ShowDelLog bool `json:"show_del_log"`
+	} `json:"config"` // 评论区显示控制
+	Upper struct {
+		MID int64 `json:"mid"`
+	} `json:"upper"` // UP主信息
+	ShowBvid bool `json:"show_bvid"`
+	Control  struct {
+		InputDisable          bool   `json:"input_disable"`            // 禁止评论?
+		RootInputText         string `json:"root_input_text"`          // 评论框文字
+		ChildInputText        string `json:"child_input_text"`         // 评论框文字
+		GiveUpInputText       string `json:"giveup_input_text"`        // 放弃评论后的评论框文字
+		BgText                string `json:"bg_text"`                  // 空评论区文字
+		WebSelection          bool   `json:"web_selection"`            // 评论是否筛选后可见 false：无需筛选 true：需要筛选
+		AnswerGuideText       string `json:"answer_guide_text"`        // 答题页面链接文字
+		AnswerGuideIconURL    string `json:"answer_guide_icon_url"`    // 答题页面图标url
+		AnswerGuideIosURL     string `json:"answer_guide_ios_url"`     // 答题页面ios url
+		AnswerGuideAndroidURL string `json:"answer_guide_android_url"` // 答题页面安卓url
+		ShowType              int    `json:"show_type"`
+		ShowText              string `json:"show_text"`
+	} `json:"control"`
+}
