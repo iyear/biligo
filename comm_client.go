@@ -1378,3 +1378,22 @@ func (c *CommClient) CommentGetReply(oid int64, tp int, root int64, pn int, ps i
 	}
 	return r, nil
 }
+
+func (c *CommClient) UserGetInfo(mid int64) (*UserInfo, error) {
+	resp, err := c.RawParse(
+		BiliApiURL,
+		"x/space/acc/info",
+		"GET",
+		map[string]string{
+			"mid": strconv.FormatInt(mid, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &UserInfo{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

@@ -2712,3 +2712,21 @@ func (b *BiliClient) LiveSendDanmaku(roomID int64, color int64, fontsize int, mo
 	)
 	return err
 }
+func (b *BiliClient) UserGetInfo(mid int64) (*UserInfo, error) {
+	resp, err := b.RawParse(
+		BiliApiURL,
+		"x/space/acc/info",
+		"GET",
+		map[string]string{
+			"mid": strconv.FormatInt(mid, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &UserInfo{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

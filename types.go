@@ -2032,3 +2032,133 @@ type CommentReply struct {
 		MID int64 `json:"mid"`
 	} `json:"upper"`
 }
+type UserInfo struct {
+	MID      int64  `json:"mid"`      // mid
+	Name     string `json:"name"`     // 昵称
+	Sex      string `json:"sex"`      // 性别 男/女/保密
+	Face     string `json:"face"`     // 头像链接
+	Sign     string `json:"sign"`     // 签名
+	Rank     int    `json:"rank"`     // 10000
+	Level    int    `json:"level"`    // 当前等级	0-6级
+	JoinTime int64  `json:"jointime"` // 0
+	Moral    int    `json:"moral"`    // 0
+	Silence  int    `json:"silence"`  // 封禁状态 0：正常 1：被封
+	// 硬币数 需要登录(Cookie)
+	//
+	// 只能查看自己的
+	//
+	// 默认为0
+	Coins     int  `json:"coins"`
+	FansBadge bool `json:"fans_badge"` // 是否具有粉丝勋章 false：无 true：有
+	Official  struct {
+		// 认证类型
+		//
+		// 0：无
+		//
+		// 1 2 7：个人认证
+		//
+		// 3 4 5 6：机构认证
+		Role  int    `json:"role"`
+		Title string `json:"title"` // 认证信息
+		Desc  string `json:"desc"`  // 认证备注
+		Type  int    `json:"type"`  // 是否认证 -1：无 0：认证
+	} `json:"official"`
+	Vip struct {
+		// 会员类型
+		//
+		// 0：无
+		//
+		// 1：月大会员
+		//
+		// 2：年度及以上大会员
+		Type       int   `json:"type"`
+		Status     int   `json:"status"`       // 会员状态 0：无 1：有
+		DueDate    int64 `json:"due_date"`     // 会员过期时间 Unix时间戳(毫秒)
+		VipPayType int   `json:"vip_pay_type"` // 支付类型?
+		ThemeType  int   `json:"theme_type"`   // 0
+		Label      struct {
+			Path string `json:"path"` //
+			Text string `json:"text"` // 会员类型文案
+			// 会员标签
+			//
+			// vip：大会员
+			//
+			// annual_vip：年度大会员
+			//
+			// ten_annual_vip：十年大会员
+			//
+			// hundred_annual_vip：百年大会员
+			LabelTheme  string `json:"label_theme"`
+			TextColor   string `json:"text_color"`   // 文字颜色
+			BgStyle     int    `json:"bg_style"`     // 背景类型
+			BgColor     string `json:"bg_color"`     // 背景颜色
+			BorderColor string `json:"border_color"` // 边角颜色
+		} `json:"label"` //
+		AvatarSubscript    int    `json:"avatar_subscript"`     // 是否显示会员图标	0：不显示 1：显示
+		NicknameColor      string `json:"nickname_color"`       // 会员昵称颜色 颜色码
+		Role               int    `json:"role"`                 //
+		AvatarSubscriptUrl string `json:"avatar_subscript_url"` // 会员图标url
+	} `json:"vip"` //
+	Pendant struct {
+		PID               int64  `json:"pid"`                 // 头像框id
+		Name              string `json:"name"`                // 头像框名称
+		Image             string `json:"image"`               // 头像框图片url
+		Expire            int64  `json:"expire"`              // 0
+		ImageEnhance      string `json:"image_enhance"`       //
+		ImageEnhanceFrame string `json:"image_enhance_frame"` //
+	} `json:"pendant"` //
+	Nameplate struct {
+		NID        int    `json:"nid"`         // 勋章id
+		Name       string `json:"name"`        // 勋章名称
+		Image      string `json:"image"`       // 挂件图片url 正常
+		ImageSmall string `json:"image_small"` // 勋章图片url 小
+		Level      string `json:"level"`       // 勋章等级
+		Condition  string `json:"condition"`   // 勋章条件
+	} `json:"nameplate"` //
+	// 是否关注此用户	true：已关注 false：未关注
+	//
+	// 需要登录(Cookie)
+	//
+	// 未登录恒为false
+	IsFollowed bool   `json:"is_followed"` //
+	TopPhoto   string `json:"top_photo"`   // 主页头图链接
+	SysNotice  struct {
+		// 系统提示类型id
+		//
+		// 8：争议账号
+		//
+		// 20：纪念账号
+		//
+		// 22：合约诉讼
+		ID         int    `json:"id"`
+		Content    string `json:"content"`     // 提示文案
+		URL        string `json:"url"`         // 提示信息页面url
+		NoticeType int    `json:"notice_type"` //
+		Icon       string `json:"icon"`        // 提示图标url
+		TextColor  string `json:"text_color"`  // 提示文字颜色
+		BgColor    string `json:"bg_color"`    // 提示背景颜色
+	} `json:"sys_notice"` //
+	LiveRoom struct {
+		RoomStatus    int    `json:"roomStatus"`     // 直播间状态 0：无房间 1：有房间
+		RoundStatus   int    `json:"roundStatus"`    // 轮播状态 0：未轮播 1：轮播
+		LiveStatus    int    `json:"liveStatus"`     // 直播状态 0：未开播 1：直播中
+		URL           string `json:"url"`            // 直播间网页url
+		Title         string `json:"title"`          // 直播间标题
+		Cover         string `json:"cover"`          // 直播间封面url
+		Online        int    `json:"online"`         // 直播间人气 值为上次直播时刷新
+		RoomID        int    `json:"roomid"`         // 直播间id(真实ID)
+		BroadcastType int    `json:"broadcast_type"` // 0
+		OnlineHidden  int    `json:"online_hidden"`  // 已废弃
+	} `json:"live_room"` //
+	Birthday string `json:"birthday"` // 生日 MM-DD 如设置隐私为空
+	School   struct {
+		Name string `json:"name"` // 就读大学名称
+	} `json:"school"` //
+	Profession struct {
+		Name string `json:"name"` //
+	} `json:"profession"` //
+	Series struct {
+		UserUpgradeStatus int  `json:"user_upgrade_status"` //
+		ShowUpgradeWindow bool `json:"show_upgrade_window"` //
+	} `json:"series"` //
+}
