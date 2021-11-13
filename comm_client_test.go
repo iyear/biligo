@@ -459,7 +459,7 @@ func TestCommClient_ChargeVideoList(t *testing.T) {
 		t.Logf("\tmid: %d,rank: %d,uname: %s,msg: %s", i.PayMID, i.Rank, i.Uname, i.Message)
 	}
 }
-func TestCommClient_LiveRoomInfo(t *testing.T) {
+func TestCommClient_LiveGetRoomInfoByMID(t *testing.T) {
 	info, err := testCommClient.LiveGetRoomInfoByMID(436473455)
 	if err != nil {
 		t.Error(err)

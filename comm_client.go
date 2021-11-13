@@ -1079,24 +1079,11 @@ func (c *CommClient) ChargeVideoGetList(mid int64, aid int64) (*ChargeVideoList,
 //
 // 从mid获取直播间信息
 func (c *CommClient) LiveGetRoomInfoByMID(mid int64) (*LiveRoomInfoByMID, error) {
-	resp, err := c.RawParse(
-		BiliApiURL,
-		"x/space/acc/info",
-		"GET",
-		map[string]string{
-			"mid": strconv.FormatInt(mid, 10),
-		},
-	)
+	r, err := c.UserGetInfo(mid)
 	if err != nil {
 		return nil, err
 	}
-	var info struct {
-		LiveRoom *LiveRoomInfoByMID `json:"live_room"`
-	}
-	if err = json.Unmarshal(resp.Data, &info); err != nil {
-		return nil, err
-	}
-	return info.LiveRoom, nil
+	return (*LiveRoomInfoByMID)(&r.LiveRoom), nil
 }
 
 // LiveGetRoomInfoByID 从roomID获取直播间信息
