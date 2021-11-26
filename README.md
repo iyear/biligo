@@ -1,18 +1,11 @@
-<img src="https://github.com/iyear/biligo/raw/v0/logo/bilibili.png" alt="logo" width="130" height="130" align="left" />
+![](https://socialify.git.ci/iyear/biligo/image?description=1&font=Raleway&forks=1&issues=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fiyear%2Fbiligo%2Fv0%2Flogo%2Fbilibili.png&owner=1&pattern=Circuit%20Board&stargazers=1&theme=Light)
 
-<h1>BiliGO</h1>
-
-> BiliBili API SDK in Golang
-
-<br/>
-
+## 简介
 ![](https://img.shields.io/github/go-mod/go-version/iyear/biligo?style=flat-square)
 ![](https://img.shields.io/badge/license-GPL-lightgrey.svg?style=flat-square)
 ![](https://img.shields.io/github/v/release/iyear/biligo?color=red&style=flat-square)
 ![](https://img.shields.io/github/last-commit/iyear/biligo?style=flat-square)
 [![Go Reference](https://pkg.go.dev/badge/github.com/iyear/biligo.svg)](https://pkg.go.dev/github.com/iyear/biligo)
-
-## 简介
 
 **v0版本不保证对外函数、结构的不变性，请勿大规模用于生产环境**
 
