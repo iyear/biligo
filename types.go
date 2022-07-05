@@ -2048,7 +2048,7 @@ type UserInfo struct {
 	// 只能查看自己的
 	//
 	// 默认为0
-	Coins     int  `json:"coins"`
+	Coins     float32  `json:"coins"`
 	FansBadge bool `json:"fans_badge"` // 是否具有粉丝勋章 false：无 true：有
 	Official  struct {
 		// 认证类型
