@@ -536,7 +536,7 @@ func (c *CommClient) SpaceGetLastVideoCoin(mid int64) ([]*SpaceVideoCoin, error)
 func (c *CommClient) SpaceSearchVideo(mid int64, order string, tid int, keyword string, pn int, ps int) (*SpaceVideoSearchResult, error) {
 	resp, err := c.RawParse(
 		BiliApiURL,
-		"x/space/arc/search",
+		"x/space/wbi/arc/search",
 		"GET",
 		map[string]string{
 			"mid":     strconv.FormatInt(mid, 10),
