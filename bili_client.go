@@ -974,7 +974,6 @@ func (b *BiliClient) FavGetRes(mlid int64) ([]*FavRes, error) {
 
 // FavGetResDetail 获取收藏夹内容详细内容，带过滤功能
 //
-//
 // tid 分区id，用于筛选，传入0代表所有分区
 //
 // keyword 关键词筛选 可留空
@@ -2696,7 +2695,7 @@ func (b *BiliClient) DynaGetDrafts() (*DynaGetDraft, error) {
 //
 // bubble: 气泡弹幕?默认0
 func (b *BiliClient) LiveSendDanmaku(roomID int64, color int64, fontsize int, mode int, msg string, bubble int) error {
-	_, err := b.RawParse(
+	resp, err := b.RawParse(
 		BiliLiveURL,
 		"msg/send",
 		"POST",
@@ -2710,7 +2709,16 @@ func (b *BiliClient) LiveSendDanmaku(roomID int64, color int64, fontsize int, mo
 			"rnd":      strconv.FormatInt(time.Now().Unix(), 10),
 		},
 	)
-	return err
+	if err != nil {
+		return err
+	}
+	if resp.Message == "f" {
+		return errors.New("(0) 弹幕包含屏蔽词")
+	}
+	if resp.Message == "k" {
+		return errors.New("(0) 弹幕包含直播间指定屏蔽词")
+	}
+	return nil
 }
 func (b *BiliClient) UserGetInfo(mid int64) (*UserInfo, error) {
 	resp, err := b.RawParse(
