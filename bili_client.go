@@ -75,6 +75,36 @@ func NewBiliClient(setting *BiliSetting) (*BiliClient, error) {
 	return bili, nil
 }
 
+// NewBiliClientScanQrcode
+//
+// 通过扫描二维码获取Cookie无需手动设置Cookies
+func NewBiliClientScanQrcode(setting *BiliSetting) (*BiliClient, error) {
+	cookies := util.GetCookie()
+	bili := &BiliClient{
+		auth: &CookieAuth{
+			DedeUserID:      cookies.DedeUserID,
+			SESSDATA:        cookies.SESSDATA,
+			BiliJCT:         cookies.Bili_jct,
+			DedeUserIDCkMd5: cookies.DedeUserID__ckMd5,
+		},
+		baseClient: newBaseClient(&baseSetting{
+			Client:    setting.Client,
+			DebugMode: setting.DebugMode,
+			UserAgent: setting.UserAgent,
+			Prefix:    "BiliClient ",
+		}),
+	}
+
+	account, err := bili.GetMe()
+	if err != nil {
+		return nil, err
+	}
+
+	bili.Me = account
+
+	return bili, nil
+}
+
 // GetMe
 //
 // 获取个人基本信息
