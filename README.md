@@ -85,6 +85,35 @@ func main() {
 }
 ```
 
+或者可以使用扫码登录,此时无需手动指定cookie
+```go
+package main
+
+import (
+	bg "github.com/iyear/biligo"
+	"fmt"
+	"time"
+)
+
+func main() {
+	b, err := bg.NewBiliClientScanQrcode(&bg.BiliSetting{
+		// DEBUG 模式将输出请求和响应
+		DebugMode: true,
+		// Client: myClient,
+		// UserAgent: "My UA",
+	})
+
+	if err != nil {
+		log.Fatal("failed to make new bili client; error: ", err)
+		return
+	}
+
+    fmt.Printf("mid: %d, uname: %s,userID: %s,rank: %s\n", b.Me.MID, b.Me.UName, b.Me.UserID, b.Me.Rank)
+    fmt.Printf("birthday: %s,sex: %s\n", b.Me.Birthday, b.Me.Sex)
+    fmt.Printf("sign: %s\n", b.Me.Sign)
+}
+```
+
 ### 例子
 
 同目录下的 `example` 文件夹
